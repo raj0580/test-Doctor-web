@@ -288,3 +288,218 @@
                         
                         <div class="delivery-info">
                             <h3>Delivery Information</h3>
+                            <div class="delivery-options">
+                                <div class="delivery-option">
+                                    <i class="fas fa-shipping-fast"></i>
+                                    <div>
+                                        <strong>Express Delivery</strong>
+                                        <p>Get it within 24 hours</p>
+                                    </div>
+                                </div>
+                                <div class="delivery-option">
+                                    <i class="fas fa-truck"></i>
+                                    <div>
+                                        <strong>Standard Delivery</strong>
+                                        <p>2-3 business days</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="safety-info">
+                            <div class="safety-notice">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p><strong>Important:</strong> Please consult your healthcare provider before using any medication.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update breadcrumb
+        function updateBreadcrumb(productName) {
+            document.getElementById('breadcrumbProduct').textContent = productName;
+        }
+
+        // Change main product image
+        function changeMainImage(src) {
+            document.getElementById('mainProductImage').src = src;
+            
+            // Update thumbnail active state
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Change quantity
+        function changeQuantity(delta) {
+            const input = document.getElementById('quantityInput');
+            const newValue = parseInt(input.value) + delta;
+            const max = parseInt(input.getAttribute('max'));
+            
+            if (newValue >= 1 && newValue <= max) {
+                input.value = newValue;
+                selectedQuantity = newValue;
+            }
+        }
+
+        // Update quantity
+        function updateQuantity(value) {
+            const max = parseInt(document.getElementById('quantityInput').getAttribute('max'));
+            const quantity = Math.max(1, Math.min(parseInt(value) || 1, max));
+            document.getElementById('quantityInput').value = quantity;
+            selectedQuantity = quantity;
+        }
+
+        // Add product to cart
+        function addProductToCart() {
+            if (!currentProduct) return;
+            
+            const success = addToCart(currentProduct.id, selectedQuantity);
+            
+            if (success) {
+                showNotification(`${currentProduct.name} added to cart!`, 'success');
+                updateCartCount();
+                
+                // Animate the cart icon
+                const cartIcon = document.querySelector('.cart-icon');
+                cartIcon.classList.add('bounce');
+                setTimeout(() => cartIcon.classList.remove('bounce'), 600);
+            } else {
+                showNotification('Failed to add product to cart', 'error');
+            }
+        }
+
+        // Buy now functionality
+        function buyNow() {
+            if (!currentProduct) return;
+            
+            // Add to cart first
+            const success = addToCart(currentProduct.id, selectedQuantity);
+            
+            if (success) {
+                // Redirect to cart page
+                window.location.href = 'cart.html';
+            } else {
+                showNotification('Failed to add product to cart', 'error');
+            }
+        }
+
+        // Toggle wishlist
+        function toggleWishlist(productId) {
+            const wishlistBtn = document.querySelector('.wishlist-btn i');
+            const isWishlisted = wishlistBtn.classList.contains('fas');
+            
+            if (isWishlisted) {
+                wishlistBtn.classList.remove('fas');
+                wishlistBtn.classList.add('far');
+                showNotification('Removed from wishlist', 'info');
+            } else {
+                wishlistBtn.classList.remove('far');
+                wishlistBtn.classList.add('fas');
+                showNotification('Added to wishlist', 'success');
+            }
+        }
+
+        // Notify when available
+        function notifyWhenAvailable(productId) {
+            showNotification('You will be notified when this product is back in stock', 'info');
+        }
+
+        // Load related products
+        async function loadRelatedProducts(category) {
+            try {
+                const products = await getProducts();
+                const relatedProducts = products
+                    .filter(p => p.category === category && p.id !== currentProduct.id && p.visible)
+                    .slice(0, 4);
+                
+                const container = document.getElementById('relatedProductsGrid');
+                
+                if (relatedProducts.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-products">
+                            <p>No related products found</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = '';
+                relatedProducts.forEach(product => {
+                    const productCard = createRelatedProductCard(product);
+                    container.appendChild(productCard);
+                });
+            } catch (error) {
+                console.error('Error loading related products:', error);
+                document.getElementById('relatedProductsGrid').innerHTML = `
+                    <div class="error-message">
+                        <p>Error loading related products</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Create related product card
+        function createRelatedProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card related-product-card';
+            
+            const discount = product.originalPrice > product.sellingPrice 
+                ? Math.round(((product.originalPrice - product.sellingPrice) / product.originalPrice) * 100)
+                : 0;
+            
+            card.innerHTML = `
+                <div class="product-image-container">
+                    <img src="${product.imageUrl || 'https://via.placeholder.com/300x200?text=Medicine'}" 
+                         alt="${product.name}" class="product-image" loading="lazy">
+                    ${discount > 0 ? `<div class="discount-badge">${discount}% OFF</div>` : ''}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <div class="price-section">
+                        <span class="current-price">₹${product.sellingPrice}</span>
+                        ${product.originalPrice > product.sellingPrice 
+                            ? `<span class="original-price">₹${product.originalPrice}</span>` 
+                            : ''
+                        }
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-sm btn-outline" onclick="viewProduct('${product.id}')">
+                            View Details
+                        </button>
+                        <button class="btn btn-sm btn-primary" onclick="addToCart('${product.id}')" 
+                                ${product.stock <= 0 ? 'disabled' : ''}>
+                            ${product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // View product
+        function viewProduct(productId) {
+            window.location.href = `product.html?id=${productId}`;
+        }
+
+        // Show error message
+        function showError(message) {
+            const container = document.getElementById('productDetailsContainer');
+            container.innerHTML = `
+                <div class="error-container">
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Oops! Something went wrong</h2>
+                        <p>${message}</p>
+                        <a href="index.html" class="btn btn-primary">Back to Home</a>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
