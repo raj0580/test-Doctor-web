@@ -1,8 +1,9 @@
 import { db, auth } from '../assets/js/firebase-config.js';
 import { collection, getDocs, addDoc, serverTimestamp, doc, updateDoc, query, orderBy, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { CONFIG } from '../config.js';
 
-const IMGBB_API_KEY = window.CONFIG.IMGBB_API_KEY;
+const IMGBB_API_KEY = CONFIG.IMGBB_API_KEY;
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
