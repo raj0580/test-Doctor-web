@@ -1,442 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare - Online Pharmacy</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ডাক্তারের ই-কমার্স</title>
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-pills"></i>
-                    <span>MediCare</span>
-                </div>
-                <nav class="nav-menu">
-                    <a href="index.html" class="nav-link active">Home</a>
-                    <a href="#products" class="nav-link">Products</a>
-                    <a href="#about" class="nav-link">About</a>
-                    <a href="#contact" class="nav-link">Contact</a>
-                    <a href="cart.html" class="cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cartCount">0</span>
-                    </a>
-                    <a href="admin.html" class="nav-link admin-link">Admin</a>
-                </nav>
-                <div class="mobile-menu-toggle" id="mobileMenuToggle">
-                    <i class="fas fa-bars"></i>
-                </div>
-            </div>
-        </div>
-    </header>
+<header>
+    <nav>
+        <div class="logo">ডাক্তারের দোকান</div>
+        <ul>
+            <li><a href="index.html">হোম</a></li>
+            <li><a href="profile.html">আমার প্রোফাইল</a></li>
+        </ul>
+    </nav>
+</header>
 
-    <!-- Hero Banner Section -->
-    <section class="hero-banner" id="heroBanner">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Your Health, Our Priority</h1>
-                <p>Get authentic medicines delivered to your doorstep with fast and reliable service</p>
-                <div class="hero-buttons">
-                    <a href="#products" class="btn btn-primary">Shop Now</a>
-                    <a href="#about" class="btn btn-outline">Learn More</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <i class="fas fa-user-md"></i>
-            </div>
-        </div>
+<main>
+    <section class="hero">
+        <h1>ভালো মানের প্রোডাক্টস</h1>
+        <p>আপনার স্বাস্থ্যের জন্য ডাক্তারের নির্বাচিত প্রোডাক্ট।</p>
     </section>
 
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-shipping-fast"></i>
-                    <h3>Fast Delivery</h3>
-                    <p>Get your medicines delivered within 24 hours</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>Authentic Products</h3>
-                    <p>100% genuine medicines from licensed pharmacies</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-headset"></i>
-                    <h3>24/7 Support</h3>
-                    <p>Round the clock customer support for your queries</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-tags"></i>
-                    <h3>Best Prices</h3>
-                    <p>Competitive prices with exclusive discounts</p>
-                </div>
-            </div>
-        </div>
+    <section id="products-container" class="products-grid">
+        <!-- Products will be loaded here by JavaScript -->
     </section>
+</main>
 
-    <!-- Products Section -->
-    <section class="products-section" id="products">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Featured Products</h2>
-                <p class="section-subtitle">Discover our most popular medicines and healthcare products</p>
-            </div>
-            
-            <!-- Category Filter -->
-            <div class="category-filter">
-                <button class="filter-btn active" data-category="all">All Products</button>
-                <button class="filter-btn" data-category="tablets">Tablets</button>
-                <button class="filter-btn" data-category="syrup">Syrups</button>
-                <button class="filter-btn" data-category="capsules">Capsules</button>
-                <button class="filter-btn" data-category="ointment">Ointments</button>
-            </div>
-
-            <!-- Products Grid -->
-            <div class="products-grid" id="productsGrid">
-                <!-- Products will be loaded dynamically from Firebase -->
-                <div class="loading-spinner">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Loading products...</p>
-                </div>
-            </div>
-
-            <!-- Load More Button -->
-            <div class="load-more-section">
-                <button class="btn btn-outline" id="loadMoreBtn">Load More Products</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about-section" id="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>About MediCare</h2>
-                    <p>MediCare is your trusted online pharmacy, committed to providing authentic medicines and healthcare products at your doorstep. With over 10 years of experience in the healthcare industry, we ensure quality, safety, and reliability in every order.</p>
-                    <div class="about-stats">
-                        <div class="stat">
-                            <h3>10K+</h3>
-                            <p>Happy Customers</p>
-                        </div>
-                        <div class="stat">
-                            <h3>500+</h3>
-                            <p>Products Available</p>
-                        </div>
-                        <div class="stat">
-                            <h3>24/7</h3>
-                            <p>Customer Support</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-image">
-                    <i class="fas fa-hospital"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="newsletter-section">
-        <div class="container">
-            <div class="newsletter-content">
-                <h2>Stay Updated</h2>
-                <p>Subscribe to our newsletter for health tips and exclusive offers</p>
-                <form class="newsletter-form" id="newsletterForm">
-                    <input type="email" placeholder="Enter your email address" required>
-                    <button type="submit" class="btn btn-primary">Subscribe</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact-section" id="contact">
-        <div class="container">
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h2>Get In Touch</h2>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h4>Phone</h4>
-                            <p>+91 98765 43210</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h4>Email</h4>
-                            <p>support@medicare.com</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4>Address</h4>
-                            <p>123 Healthcare Street, Kolkata, WB 700001</p>
-                        </div>
-                    </div>
-                </div>
-                <form class="contact-form" id="contactForm">
-                    <h3>Send Message</h3>
-                    <div class="form-row">
-                        <input type="text" placeholder="Your Name" required>
-                        <input type="email" placeholder="Your Email" required>
-                    </div>
-                    <input type="text" placeholder="Subject" required>
-                    <textarea placeholder="Your Message" rows="5" required></textarea>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <i class="fas fa-pills"></i>
-                        <span>MediCare</span>
-                    </div>
-                    <p>Your trusted online pharmacy for authentic medicines and healthcare products.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#products">Products</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                        <li><a href="cart.html">Cart</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Categories</h4>
-                    <ul>
-                        <li><a href="#">Tablets</a></li>
-                        <li><a href="#">Syrups</a></li>
-                        <li><a href="#">Capsules</a></li>
-                        <li><a href="#">Ointments</a></li>
-                        <li><a href="#">Healthcare</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Customer Service</h4>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 MediCare. All rights reserved.</p>
-                <p>Licensed pharmacy - Reg. No: PH12345678</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Floating WhatsApp Button -->
-    <div class="whatsapp-float">
-        <a href="https://wa.me/919876543210" target="_blank">
-            <i class="fab fa-whatsapp"></i>
-        </a>
+<!-- Lead Capture Modal -->
+<div id="lead-popup" class="modal">
+    <div class="modal-content">
+        <h3>স্বাগতম!</h3>
+        <p>শুরু করার জন্য আপনার নাম ও ফোন নম্বর দিন।</p>
+        <input type="text" id="lead-name" placeholder="আপনার নাম" required>
+        <input type="tel" id="lead-phone" placeholder="ফোন নম্বর (+880...)" required>
+        <button id="submit-lead">জমা দিন</button>
     </div>
+</div>
 
-    <!-- Firebase Configuration -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    
-    <!-- Custom Scripts -->
-    <script src="firebase-config.js"></script>
-    <script src="script.js"></script>
-    
-    <script>
-        // Initialize homepage specific functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeHomePage();
-            loadProducts();
-            updateCartCount();
-            
-            // Category filter functionality
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    filterProducts(this.dataset.category);
-                });
-            });
+<!-- OTP Verification Modal -->
+<div id="otp-modal" class="modal">
+    <div class="modal-content">
+        <h3>ফোন নম্বর ভেরিফাই করুন</h3>
+        <p id="otp-message"></p>
+        <div id="recaptcha-container"></div>
+        <button id="send-otp-btn">OTP পাঠান</button>
+        <input type="text" id="otp-input" placeholder="6-digit OTP" style="display:none;">
+        <button id="verify-otp-btn" style="display:none;">ভেরিফাই ও অর্ডার করুন</button>
+    </div>
+</div>
 
-            // Mobile menu toggle
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const navMenu = document.querySelector('.nav-menu');
-            
-            mobileMenuToggle.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
-            });
-
-            // Newsletter form
-            document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                showNotification('Thank you for subscribing to our newsletter!', 'success');
-                this.reset();
-            });
-
-            // Contact form
-            document.getElementById('contactForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                showNotification('Thank you for your message. We will get back to you soon!', 'success');
-                this.reset();
-            });
-
-            // Smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        });
-
-        // Load and display products
-        function loadProducts() {
-            const productsGrid = document.getElementById('productsGrid');
-            
-            // Clear loading spinner
-            productsGrid.innerHTML = '';
-            
-            // Get products from Firebase
-            getProducts().then(products => {
-                if (products.length === 0) {
-                    productsGrid.innerHTML = `
-                        <div class="no-products">
-                            <i class="fas fa-pills"></i>
-                            <h3>No Products Found</h3>
-                            <p>Products will be available soon!</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                products.forEach(product => {
-                    if (product.visible) {
-                        const productCard = createProductCard(product);
-                        productsGrid.appendChild(productCard);
-                    }
-                });
-            }).catch(error => {
-                console.error('Error loading products:', error);
-                productsGrid.innerHTML = `
-                    <div class="error-message">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Error Loading Products</h3>
-                        <p>Please try again later.</p>
-                    </div>
-                `;
-            });
-        }
-
-        // Filter products by category
-        function filterProducts(category) {
-            const productCards = document.querySelectorAll('.product-card');
-            
-            productCards.forEach(card => {
-                const productCategory = card.dataset.category;
-                if (category === 'all' || productCategory === category) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Create product card element
-        function createProductCard(product) {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.dataset.category = product.category || 'tablets';
-            
-            const discount = product.originalPrice > product.sellingPrice 
-                ? Math.round(((product.originalPrice - product.sellingPrice) / product.originalPrice) * 100)
-                : 0;
-            
-            card.innerHTML = `
-                <div class="product-image-container">
-                    <img src="${product.imageUrl || 'https://via.placeholder.com/300x200?text=Medicine'}" 
-                         alt="${product.name}" class="product-image" loading="lazy">
-                    ${discount > 0 ? `<div class="discount-badge">${discount}% OFF</div>` : ''}
-                    <div class="product-overlay">
-                        <button class="btn btn-sm" onclick="viewProduct('${product.id}')">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-description">${product.description || 'Quality medicine for your health needs'}</p>
-                    <div class="price-section">
-                        <span class="current-price">₹${product.sellingPrice}</span>
-                        ${product.originalPrice > product.sellingPrice 
-                            ? `<span class="original-price">₹${product.originalPrice}</span>` 
-                            : ''
-                        }
-                    </div>
-                    <div class="product-actions">
-                        <button class="add-to-cart" onclick="addToCart('${product.id}')" 
-                                ${product.stock <= 0 ? 'disabled' : ''}>
-                            <i class="fas fa-cart-plus"></i> 
-                            ${product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // View product details
-        function viewProduct(productId) {
-            window.location.href = `product.html?id=${productId}`;
-        }
-
-        // Initialize homepage
-        function initializeHomePage() {
-            // Load dynamic hero banner from Firebase
-            loadHeroBanner();
-            
-            // Update cart count on page load
-            updateCartCount();
-        }
-
-        // Load hero banner data
-        function loadHeroBanner() {
-            // This would load banner data from Firebase
-            // For now, using static content
-        }
-    </script>
-</body>
-</html>
+<script type="module" src="assets/js/firebase-config.js"></script>
+<script type="module" src="assets/js/app.js"></script>
