@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang="checkout_page_title">চেকআউট</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo" data-lang="site_title">ডাক্তারের দোকান</div>
+        </nav>
+    </header>
+
+    <main class="checkout-page">
+        <div class="checkout-container">
+            <!-- Order Summary Column -->
+            <div class="order-summary">
+                <h2 data-lang="order_summary">অর্ডার সারাংশ</h2>
+                <div id="product-summary-card">
+                    <!-- Product info will be loaded here by JS -->
+                </div>
+            </div>
+
+            <!-- Shipping Address and Payment Column -->
+            <div class="shipping-payment">
+                <h2 data-lang="shipping_address">ডেলিভারি ঠিকানা</h2>
+                <div id="address-section">
+                    <p><strong><span data-lang="profile_name"></span></strong> <span id="user-name-display"></span></p>
+                    <p><strong><span data-lang="profile_phone"></span></strong> <span id="user-phone-display"></span></p>
+                    <textarea id="shipping-address-input" data-lang-placeholder="profile_address_placeholder"></textarea>
+                </div>
+                <button id="pay-now-btn" data-lang="pay_now">এখন পেমেন্ট করুন</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script type="module" src="assets/js/checkout.js"></script>
+</body>
+</html>
