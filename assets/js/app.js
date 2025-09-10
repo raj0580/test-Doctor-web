@@ -1,5 +1,5 @@
 import { db, auth } from './firebase-config.js';
-import { collection, addDoc, getDocs, serverTimestamp, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, addDoc, getDocs, serverTimestamp, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let translations = {};
@@ -38,7 +38,7 @@ async function loadHeroBanner() {
         if (docSnap.exists() && docSnap.data().imageUrl) {
             heroSection.style.backgroundImage = `url(${docSnap.data().imageUrl})`;
         } else {
-            heroSection.innerHTML = `<h1 data-lang="hero_title"></h1><p data-lang="hero_subtitle"></p>`;
+            heroSection.innerHTML = `<div class="hero-content"><h1 data-lang="hero_title"></h1><p data-lang="hero_subtitle"></p></div>`;
             translatePage(); // To translate the fallback text
         }
     } catch (e) {
@@ -49,20 +49,21 @@ async function loadHeroBanner() {
 document.addEventListener('DOMContentLoaded', () => {
     loadTranslations().then(() => {
         onAuthStateChanged(auth, user => {
-            const navLinks = document.getElementById('nav-links');
-            const profileLink = navLinks.querySelector('#profile-link');
+            const navLinksContainer = document.querySelector(".nav-links-container ul");
+            let profileLink = navLinksContainer.querySelector('#profile-link');
             if (user) {
                 if (!profileLink) {
                     const li = document.createElement('li');
                     li.innerHTML = `<a href="profile.html" id="profile-link" data-lang="nav_profile">${translations.nav_profile}</a>`;
-                    navLinks.appendChild(li);
+                    navLinksContainer.appendChild(li);
                 }
             } else {
                 if (profileLink) profileLink.parentElement.remove();
             }
         });
 
-        if (!localStorage.getItem('leadCaptured')) {
+        // ✅ সংশোধিত লজিক: Local Storage চেক করা হচ্ছে
+        if (!localStorage.getItem('leadInfo')) {
             leadPopup.style.display = 'flex';
         }
         loadHeroBanner();
@@ -77,9 +78,19 @@ document.getElementById('submit-lead').addEventListener('click', async () => {
         alert(translations.alert_invalid_details);
         return;
     }
-    await addDoc(collection(db, "leads"), { name, phone, timestamp: serverTimestamp() });
+
+    // ✅ সংশোধিত লজিক: লিড যোগ করার আগে চেক করা হচ্ছে
+    const leadsRef = collection(db, "leads");
+    const q = query(leadsRef, where("phone", "==", phone));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+        // যদি এই ফোন নম্বর আগে না থাকে, তবেই লিড যোগ করা হবে
+        await addDoc(leadsRef, { name, phone, timestamp: serverTimestamp() });
+    }
+    
+    // ✅ Local Storage-এ তথ্য সেভ করা হচ্ছে
     localStorage.setItem('leadInfo', JSON.stringify({ name, phone }));
-    localStorage.setItem('leadCaptured', 'true');
     leadPopup.style.display = 'none';
 });
 
@@ -123,17 +134,25 @@ function initiateAuth() {
     otpModal.style.display = 'flex';
     document.getElementById('otp-message').innerText = translations.otp_sent_message.replace('{phone}', leadInfo.phone);
 
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-
-    document.getElementById('send-otp-btn').onclick = () => {
+    // Ensure reCAPTCHA container is visible and ready
+    if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+    }
+    
+    const sendOtpBtn = document.getElementById('send-otp-btn');
+    sendOtpBtn.onclick = () => {
         signInWithPhoneNumber(auth, leadInfo.phone, window.recaptchaVerifier)
             .then(confirmationResult => {
                 window.confirmationResult = confirmationResult;
                 alert(translations.alert_otp_sent);
-                document.getElementById('send-otp-btn').style.display = 'none';
+                sendOtpBtn.style.display = 'none';
                 document.getElementById('otp-input').style.display = 'block';
                 document.getElementById('verify-otp-btn').style.display = 'block';
-            }).catch(() => { alert(translations.alert_otp_failed); window.location.reload(); });
+            }).catch((error) => {
+                 console.error("OTP Error:", error);
+                 alert(translations.alert_otp_failed); 
+                 window.recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
+            });
     };
 }
 
@@ -141,9 +160,19 @@ document.getElementById('verify-otp-btn').onclick = () => {
     const code = document.getElementById('otp-input').value;
     window.confirmationResult.confirm(code).then(async result => {
         const leadInfo = JSON.parse(localStorage.getItem('leadInfo'));
+        // ✅ Local Storage থেকে পাওয়া নাম এখানে ব্যবহার করা হচ্ছে
         await setDoc(doc(db, "users", result.user.uid), { name: leadInfo.name, phone: result.user.phoneNumber, createdAt: serverTimestamp() }, { merge: true });
         alert(translations.alert_verification_success);
         otpModal.style.display = 'none';
         window.location.href = 'checkout.html';
     }).catch(() => alert(translations.alert_invalid_otp));
 };
+
+// Hamburger Menu Logic
+const hamburger = document.querySelector(".hamburger");
+const navLinksContainer = document.querySelector(".nav-links-container");
+
+hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active");
+    navLinksContainer.classList.toggle("active");
+});
