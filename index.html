@@ -18,19 +18,13 @@
             </div>
         </nav>
     </header>
-
     <main>
-        <section class="hero">
-            <h1 data-lang="hero_title">সেরা মানের প্রোডাক্টস</h1>
-            <p data-lang="hero_subtitle">আপনার স্বাস্থ্যের জন্য ডাক্তারের নির্বাচিত প্রোডাক্ট।</p>
-        </section>
-
+        <section id="hero-section" class="hero"></section>
         <h2 class="section-title" data-lang="products_title">আমাদের প্রোডাক্টস</h2>
         <section id="products-container" class="products-grid">
             <p data-lang="products_loading">প্রোডাক্ট লোড হচ্ছে...</p>
         </section>
     </main>
-
     <div id="lead-popup" class="modal">
         <div class="modal-content">
             <h3 data-lang="lead_popup_title">স্বাগতম!</h3>
@@ -40,7 +34,6 @@
             <button id="submit-lead" data-lang="lead_popup_submit">জমা দিন</button>
         </div>
     </div>
-
     <div id="otp-modal" class="modal">
         <div class="modal-content">
             <h3 data-lang="otp_modal_title">ফোন নম্বর ভেরিফাই করুন</h3>
@@ -48,14 +41,13 @@
             <div id="recaptcha-container"></div>
             <button id="send-otp-btn" data-lang="send_otp">OTP পাঠান</button>
             <input type="text" id="otp-input" placeholder="6-digit OTP" style="display:none;">
-            <button id="verify-otp-btn" data-lang="verify_and_order" style="display:none;">ভেরিফাই ও অর্ডার করুন</button>
+            <button id="verify-otp-btn" data-lang="verify_and_continue" style="display:none;">ভেরিফাই ও চেকআউট</button>
         </div>
     </div>
-    
     <footer>
         <p data-lang="footer_text">&copy; ২০২৫ ডাক্তারের দোকান। সর্বস্বত্ব সংরক্ষিত।</p>
     </footer>
-
+    <!-- ❌ <script src="config.js"></script> লাইনটি মুছে ফেলা হয়েছে ❌ -->
     <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>
