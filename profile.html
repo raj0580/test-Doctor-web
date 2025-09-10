@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার প্রোফাইল</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">ডাক্তারের দোকান</div>
+            <ul>
+                <li><a href="index.html">হোম</a></li>
+                <li><a href="profile.html">আমার প্রোফাইল</a></li>
+                <li><button id="logout-btn">লগ আউট</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="profile-page">
+        <h2>আমার প্রোফাইল</h2>
+        <div id="user-info" class="profile-section">
+            <p><strong>নাম:</strong> <span id="user-name">লোড হচ্ছে...</span></p>
+            <p><strong>ফোন:</strong> <span id="user-phone">লোড হচ্ছে...</span></p>
+            <input type="text" id="user-address" placeholder="আপনার সম্পূর্ণ ঠিকানা যোগ করুন">
+            <button id="update-profile-btn">ঠিকানা আপডেট করুন</button>
+        </div>
+
+        <h2 class="section-title">আমার অর্ডারসমূহ</h2>
+        <div id="orders-history-container" class="profile-section">
+            <p>অর্ডার লোড হচ্ছে...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; २०२४ ডাক্তারের দোকান। সর্বস্বত্ব সংরক্ষিত।</p>
+    </footer>
+    
+    <script type="module" src="assets/js/firebase-config.js"></script>
+    <script type="module" src="assets/js/profile.js"></script>
+</body>
+</html>
