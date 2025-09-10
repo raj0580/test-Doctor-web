@@ -12,7 +12,16 @@
             <h1>অ্যাডমিন ড্যাশবোর্ড</h1>
             <button id="logout-btn">লগ আউট</button>
         </div>
-
+        <section class="admin-section">
+            <h2>হিরো ব্যানার ম্যানেজমেন্ট</h2>
+            <form id="banner-form">
+                <p>বর্তমান ব্যানার:</p>
+                <img id="current-banner-img" src="" alt="Current Banner" style="max-width: 300px; margin-bottom: 1rem; border-radius: 5px;">
+                <label for="banner-image">নতুন ব্যানার ইমেজ আপলোড করুন (1200x400px প্রস্তাবিত)</label>
+                <input type="file" id="banner-image" accept="image/*">
+                <button type="submit" id="update-banner-btn">ব্যানার আপডেট করুন</button>
+            </form>
+        </section>
         <section class="admin-section">
             <h2>নতুন প্রোডাক্ট যোগ করুন</h2>
             <form id="add-product-form">
@@ -24,19 +33,15 @@
                 <button type="submit" id="add-product-btn">প্রোডাক্ট যোগ করুন</button>
             </form>
         </section>
-
         <section class="admin-section">
             <h2>লিডসমূহ (Leads)</h2>
             <div id="leads-container"><p>লোড হচ্ছে...</p></div>
         </section>
-
         <section class="admin-section">
             <h2>অর্ডারসমূহ</h2>
             <div id="orders-container"><p>লোড হচ্ছে...</p></div>
         </section>
     </main>
-    
-    <script type="module" src="../assets/js/firebase-config.js"></script>
     <script type="module" src="admin.js"></script>
 </body>
 </html>
