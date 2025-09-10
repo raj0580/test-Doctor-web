@@ -3,14 +3,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔴 গুরুত্বপূর্ণ: এখানে আপনার নিজের Firebase প্রজেক্টের কনফিগারেশন দিন
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyA9tQ9a8buiWOMCy8m5ZA7M07WVo5lPigI",
+  authDomain: "doctor-web-test-ca38e.firebaseapp.com",
+  projectId: "doctor-web-test-ca38e",
+  storageBucket: "doctor-web-test-ca38e.firebasestorage.app",
+  messagingSenderId: "167806498685",
+  appId: "1:167806498685:web:177aee8141ae4edb44fe14"
 };
 
 // Firebase ইনিশিয়ালাইজ করা হচ্ছে
