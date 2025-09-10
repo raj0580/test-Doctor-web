@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { doc, getDoc, addDoc, collection, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { CONFIG } from '../../config.js';
 
 const RAZORPAY_KEY_ID = CONFIG.RAZORPAY_KEY_ID;
@@ -37,27 +37,46 @@ async function loadTranslations() {
 function displayProductSummary() {
     document.getElementById('product-summary-card').innerHTML = `
         <img src="${productToCheckout.imageUrl}" alt="${productToCheckout.name}" style="width: 100px; border-radius: 5px;">
-        <h4>${productToCheckout.name}</h4>
-        <p><strong>Price:</strong> ₹${productToCheckout.price}</p>
+        <div>
+            <h4>${productToCheckout.name}</h4>
+            <p><strong>Price:</strong> ₹${productToCheckout.price}</p>
+        </div>
     `;
 }
 
 async function loadUserProfile() {
-    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-    if (userDoc.exists()) {
-        const userData = userDoc.data();
-        document.getElementById('user-name-display').textContent = userData.name;
-        document.getElementById('user-phone-display').textContent = userData.phone;
-        document.getElementById('shipping-address-input').value = userData.address || '';
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
+    let userData = {};
+
+    if (userDocSnap.exists()) {
+        userData = userDocSnap.data();
     }
+
+    // ✅ সংশোধিত লজিক: Local Storage থেকে তথ্য নিয়ে আসা হচ্ছে
+    const leadInfo = JSON.parse(localStorage.getItem('leadInfo'));
+    
+    // Firestore-এর ডেটার চেয়ে Local Storage-এর নামকে অগ্রাধিকার দেওয়া হচ্ছে (যদি থাকে)
+    const displayName = userData.name || leadInfo.name;
+    const displayPhone = userData.phone || leadInfo.phone;
+
+    document.getElementById('user-name-display').textContent = displayName;
+    document.getElementById('user-phone-display').textContent = displayPhone;
+    document.getElementById('shipping-address-input').value = userData.address || '';
 }
 
 document.getElementById('pay-now-btn').addEventListener('click', async () => {
     const shippingAddress = document.getElementById('shipping-address-input').value.trim();
-    if (!shippingAddress) { alert('Please provide a shipping address.'); return; }
+    if (!shippingAddress) {
+        alert('Please provide a shipping address.');
+        return;
+    }
 
-    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-    const userData = userDoc.data();
+    // ✅ ঠিকানাটি ইউজার প্রোফাইলে সেভ করা হচ্ছে ভবিষ্যতের জন্য
+    const userDocRef = doc(db, "users", currentUser.uid);
+    await updateDoc(userDocRef, { address: shippingAddress });
+    
+    const userData = (await getDoc(userDocRef)).data();
 
     const options = {
         key: RAZORPAY_KEY_ID,
