@@ -1,12 +1,9 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-// ✅ config.js থেকে সরাসরি ইম্পোর্ট করা হচ্ছে
 import { CONFIG } from '../../config.js';
 
 const RAZORPAY_KEY_ID = CONFIG.RAZORPAY_KEY_ID;
-// ...বাকি কোড অপরিবর্তিত...
 let currentUser = null;
 let productToCheckout = null;
 let translations = {};
