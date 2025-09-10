@@ -7,9 +7,13 @@ const getLang = () => localStorage.getItem('lang') || 'bn';
 
 async function loadTranslations() {
     const lang = getLang();
-    const response = await fetch(`assets/lang/${lang}.json`);
-    translations = await response.json();
-    translatePage();
+    try {
+        const response = await fetch(`assets/lang/${lang}.json`);
+        translations = await response.json();
+        translatePage();
+    } catch (error) {
+        console.error("Failed to load translations:", error);
+    }
 }
 
 function translatePage() {
@@ -24,13 +28,19 @@ function translatePage() {
     document.documentElement.lang = getLang();
 }
 
-document.getElementById('lang-bn').addEventListener('click', () => { localStorage.setItem('lang', 'bn'); window.location.reload(); });
-document.getElementById('lang-en').addEventListener('click', () => { localStorage.setItem('lang', 'en'); window.location.reload(); });
+const langBnBtn = document.getElementById('lang-bn');
+const langEnBtn = document.getElementById('lang-en');
+if (langBnBtn && langEnBtn) {
+    langBnBtn.addEventListener('click', () => { localStorage.setItem('lang', 'bn'); window.location.reload(); });
+    langEnBtn.addEventListener('click', () => { localStorage.setItem('lang', 'en'); window.location.reload(); });
+}
 
 const userNameEl = document.getElementById('user-name');
 const userPhoneEl = document.getElementById('user-phone');
 const userAddressInput = document.getElementById('user-address');
 const ordersContainer = document.getElementById('orders-history-container');
+const updateProfileBtn = document.getElementById('update-profile-btn');
+const logoutBtn = document.getElementById('logout-btn');
 let currentUserId = null;
 
 onAuthStateChanged(auth, user => {
@@ -49,26 +59,29 @@ async function loadUserProfile(userId) {
     const docSnap = await getDoc(doc(db, "users", userId));
     if (docSnap.exists()) {
         const userData = docSnap.data();
-        userNameEl.textContent = userData.name || 'N/A';
-        userPhoneEl.textContent = userData.phone || 'N/A';
-        userAddressInput.value = userData.address || '';
+        if (userNameEl) userNameEl.textContent = userData.name || 'N/A';
+        if (userPhoneEl) userPhoneEl.textContent = userData.phone || 'N/A';
+        if (userAddressInput) userAddressInput.value = userData.address || '';
     }
 }
 
-document.getElementById('update-profile-btn').addEventListener('click', async () => {
-    const address = userAddressInput.value.trim();
-    if (!currentUserId || !address) return;
-    await updateDoc(doc(db, "users", currentUserId), { address });
-    alert(translations.address_updated_success);
-});
+if (updateProfileBtn) {
+    updateProfileBtn.addEventListener('click', async () => {
+        if (!currentUserId || !userAddressInput) return;
+        const address = userAddressInput.value.trim();
+        await updateDoc(doc(db, "users", currentUserId), { address });
+        alert(translations.address_updated_success);
+    });
+}
 
 async function loadUserOrders(userId) {
+    if (!ordersContainer) return; // ✅ Defensive check
     const q = query(collection(db, "orders"), where("userId", "==", userId), orderBy("orderDate", "desc"));
     const querySnapshot = await getDocs(q);
     
     ordersContainer.innerHTML = '';
     if (querySnapshot.empty) {
-        ordersContainer.innerHTML = `<p>${translations.no_orders_yet}</p>`;
+        ordersContainer.innerHTML = `<p>${translations.no_orders_yet || "You haven't placed any orders yet."}</p>`;
         return;
     }
 
@@ -78,18 +91,31 @@ async function loadUserOrders(userId) {
         const orderDiv = document.createElement('div');
         orderDiv.className = 'order-item';
         orderDiv.innerHTML = `
-            <p><strong>${translations.order_id}</strong> ${docSnap.id}</p>
-            <p><strong>${translations.order_date}</strong> ${orderDate}</p>
-            <p><strong>${translations.order_total}</strong> ₹${order.totalAmount}</p>
-            <p><strong>${translations.order_status}</strong> ${order.status}</p>
+            <p><strong>${translations.order_id || 'Order ID:'}</strong> ${docSnap.id}</p>
+            <p><strong>${translations.order_date || 'Date:'}</strong> ${orderDate}</p>
+            <p><strong>${translations.order_total || 'Total Amount:'}</strong> ₹${order.totalAmount}</p>
+            <p><strong>${translations.order_status || 'Status:'}</strong> ${order.status}</p>
         `;
         ordersContainer.appendChild(orderDiv);
     });
 }
 
-document.getElementById('logout-btn').addEventListener('click', () => {
-    signOut(auth).then(() => {
-        localStorage.clear();
-        window.location.href = 'index.html';
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        signOut(auth).then(() => {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        });
     });
-});
+}
+
+// Hamburger Menu Logic
+const hamburger = document.querySelector(".hamburger");
+const navLinksContainer = document.querySelector(".nav-links-container");
+if (hamburger && navLinksContainer) { // ✅ Defensive check
+    hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("active");
+        navLinksContainer.classList.toggle("active");
+    });
+}
