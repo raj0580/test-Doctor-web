@@ -2,7 +2,6 @@ import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc, updateDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// --- Language Switcher Logic ---
 let translations = {};
 const getLang = () => localStorage.getItem('lang') || 'bn';
 
@@ -25,18 +24,9 @@ function translatePage() {
     document.documentElement.lang = getLang();
 }
 
-document.getElementById('lang-bn').addEventListener('click', () => {
-    localStorage.setItem('lang', 'bn');
-    loadTranslations();
-    loadUserOrders(auth.currentUser.uid); // Re-render orders in new language
-});
-document.getElementById('lang-en').addEventListener('click', () => {
-    localStorage.setItem('lang', 'en');
-    loadTranslations();
-    loadUserOrders(auth.currentUser.uid); // Re-render orders in new language
-});
+document.getElementById('lang-bn').addEventListener('click', () => { localStorage.setItem('lang', 'bn'); window.location.reload(); });
+document.getElementById('lang-en').addEventListener('click', () => { localStorage.setItem('lang', 'en'); window.location.reload(); });
 
-// --- Profile Page Logic ---
 const userNameEl = document.getElementById('user-name');
 const userPhoneEl = document.getElementById('user-phone');
 const userAddressInput = document.getElementById('user-address');
