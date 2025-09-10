@@ -1,55 +1,65 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ডাক্তারের ই-কমার্স</title>
-<link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ডাক্তারের ই-কমার্স</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<header>
-    <nav>
-        <div class="logo">ডাক্তারের দোকান</div>
-        <ul>
-            <li><a href="index.html">হোম</a></li>
-            <li><a href="profile.html">আমার প্রোফাইল</a></li>
-        </ul>
-    </nav>
-</header>
 
-<main>
-    <section class="hero">
-        <h1>ভালো মানের প্রোডাক্টস</h1>
-        <p>আপনার স্বাস্থ্যের জন্য ডাক্তারের নির্বাচিত প্রোডাক্ট।</p>
-    </section>
+    <header>
+        <nav>
+            <div class="logo">ডাক্তারের দোকান</div>
+            <ul id="nav-links">
+                <li><a href="index.html">হোম</a></li>
+                <!-- Profile link will be shown/hidden by JS -->
+            </ul>
+        </nav>
+    </header>
 
-    <section id="products-container" class="products-grid">
-        <!-- Products will be loaded here by JavaScript -->
-    </section>
-</main>
+    <main>
+        <section class="hero">
+            <h1>সেরা মানের প্রোডাক্টস</h1>
+            <p>আপনার স্বাস্থ্যের জন্য ডাক্তারের নির্বাচিত প্রোডাক্ট।</p>
+        </section>
 
-<!-- Lead Capture Modal -->
-<div id="lead-popup" class="modal">
-    <div class="modal-content">
-        <h3>স্বাগতম!</h3>
-        <p>শুরু করার জন্য আপনার নাম ও ফোন নম্বর দিন।</p>
-        <input type="text" id="lead-name" placeholder="আপনার নাম" required>
-        <input type="tel" id="lead-phone" placeholder="ফোন নম্বর (+880...)" required>
-        <button id="submit-lead">জমা দিন</button>
+        <h2 class="section-title">আমাদের প্রোডাক্টস</h2>
+        <section id="products-container" class="products-grid">
+            <!-- Products will be loaded here by JavaScript -->
+            <p>প্রোডাক্ট লোড হচ্ছে...</p>
+        </section>
+    </main>
+
+    <!-- Lead Capture Modal -->
+    <div id="lead-popup" class="modal">
+        <div class="modal-content">
+            <h3>স্বাগতম!</h3>
+            <p>শুরু করার জন্য আপনার নাম ও ফোন নম্বর দিন।</p>
+            <input type="text" id="lead-name" placeholder="আপনার নাম" required>
+            <input type="tel" id="lead-phone" placeholder="ফোন নম্বর (+880...)" required>
+            <button id="submit-lead">জমা দিন</button>
+        </div>
     </div>
-</div>
 
-<!-- OTP Verification Modal -->
-<div id="otp-modal" class="modal">
-    <div class="modal-content">
-        <h3>ফোন নম্বর ভেরিফাই করুন</h3>
-        <p id="otp-message"></p>
-        <div id="recaptcha-container"></div>
-        <button id="send-otp-btn">OTP পাঠান</button>
-        <input type="text" id="otp-input" placeholder="6-digit OTP" style="display:none;">
-        <button id="verify-otp-btn" style="display:none;">ভেরিফাই ও অর্ডার করুন</button>
+    <!-- OTP Verification Modal -->
+    <div id="otp-modal" class="modal">
+        <div class="modal-content">
+            <h3>ফোন নম্বর ভেরিফাই করুন</h3>
+            <p id="otp-message"></p>
+            <div id="recaptcha-container"></div>
+            <button id="send-otp-btn">OTP পাঠান</button>
+            <input type="text" id="otp-input" placeholder="6-digit OTP" style="display:none;">
+            <button id="verify-otp-btn" style="display:none;">ভেরিফাই ও অর্ডার করুন</button>
+        </div>
     </div>
-</div>
+    
+    <footer>
+        <p>&copy; २०२४ ডাক্তারের দোকান। সর্বস্বত্ব সংরক্ষিত।</p>
+    </footer>
 
-<script type="module" src="assets/js/firebase-config.js"></script>
-<script type="module" src="assets/js/app.js"></script>
+    <!-- JavaScript Modules -->
+    <script type="module" src="assets/js/firebase-config.js"></script>
+    <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
