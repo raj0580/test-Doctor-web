@@ -3,41 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আমার প্রোফাইল</title>
+    <title data-lang="profile_page_title">আমার প্রোফাইল</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">ডাক্তারের দোকান</div>
+            <div class="logo" data-lang="site_title">ডাক্তারের দোকান</div>
             <ul>
-                <li><a href="index.html">হোম</a></li>
-                <li><a href="profile.html">আমার প্রোফাইল</a></li>
-                <li><button id="logout-btn">লগ আউট</button></li>
+                <li><a href="index.html" data-lang="nav_home">হোম</a></li>
+                <li><a href="profile.html" data-lang="nav_profile">আমার প্রোফাইল</a></li>
+                <li><button id="logout-btn" data-lang="logout">লগ আউট</button></li>
             </ul>
+            <div class="lang-toggle">
+                <button id="lang-bn">বাংলা</button> | <button id="lang-en">English</button>
+            </div>
         </nav>
     </header>
 
     <main class="profile-page">
-        <h2>আমার প্রোফাইল</h2>
+        <h2 data-lang="profile_title">আমার প্রোফাইল</h2>
         <div id="user-info" class="profile-section">
-            <p><strong>নাম:</strong> <span id="user-name">লোড হচ্ছে...</span></p>
-            <p><strong>ফোন:</strong> <span id="user-phone">লোড হচ্ছে...</span></p>
-            <input type="text" id="user-address" placeholder="আপনার সম্পূর্ণ ঠিকানা যোগ করুন">
-            <button id="update-profile-btn">ঠিকানা আপডেট করুন</button>
+            <p><strong data-lang="profile_name">নাম:</strong> <span id="user-name" data-lang="profile_loading">লোড হচ্ছে...</span></p>
+            <p><strong data-lang="profile_phone">ফোন:</strong> <span id="user-phone" data-lang="profile_loading">লোড হচ্ছে...</span></p>
+            <input type="text" id="user-address" data-lang-placeholder="profile_address_placeholder">
+            <button id="update-profile-btn" data-lang="profile_update_btn">ঠিকানা আপডেট করুন</button>
         </div>
 
-        <h2 class="section-title">আমার অর্ডারসমূহ</h2>
+        <h2 class="section-title" data-lang="orders_title">আমার অর্ডারসমূহ</h2>
         <div id="orders-history-container" class="profile-section">
-            <p>অর্ডার লোড হচ্ছে...</p>
+            <p data-lang="profile_loading">লোড হচ্ছে...</p>
         </div>
     </main>
 
     <footer>
-        <p>&copy; २०२४ ডাক্তারের দোকান। সর্বস্বত্ব সংরক্ষিত।</p>
+        <p data-lang="footer_text">&copy; ২০২৫ ডাক্তারের দোকান। সর্বস্বত্ব সংরক্ষিত।</p>
     </footer>
     
-    <script type="module" src="assets/js/firebase-config.js"></script>
     <script type="module" src="assets/js/profile.js"></script>
 </body>
 </html>
