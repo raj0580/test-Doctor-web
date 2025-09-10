@@ -19,23 +19,22 @@
         </div>
     </main>
     <script>
-        // Language setup
-        const lang = localStorage.getItem('lang') || 'bn';
-        fetch(`assets/lang/${lang}.json`)
-            .then(res => res.json())
-            .then(translations => {
-                document.querySelectorAll('[data-lang]').forEach(el => {
-                    const key = el.getAttribute('data-lang');
-                    el.innerText = translations[key];
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'bn';
+            fetch(`assets/lang/${lang}.json`)
+                .then(res => res.json())
+                .then(translations => {
+                    document.querySelectorAll('[data-lang]').forEach(el => {
+                        const key = el.getAttribute('data-lang');
+                        if (translations[key]) el.innerText = translations[key];
+                    });
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const orderId = urlParams.get('orderId');
+                    if (orderId) {
+                        document.getElementById('order-id-display').textContent = orderId;
+                    }
                 });
-            });
-
-        // Display Order ID
-        const urlParams = new URLSearchParams(window.location.search);
-        const orderId = urlParams.get('orderId');
-        if (orderId) {
-            document.getElementById('order-id-display').textContent = orderId;
-        }
+        });
     </script>
 </body>
 </html>
