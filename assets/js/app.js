@@ -39,7 +39,7 @@ async function loadHeroBanner() {
             heroSection.style.backgroundImage = `url(${docSnap.data().imageUrl})`;
         } else {
             heroSection.innerHTML = `<h1 data-lang="hero_title"></h1><p data-lang="hero_subtitle"></p>`;
-            translatePage();
+            translatePage(); // To translate the fallback text
         }
     } catch (e) {
         console.error("Error loading banner:", e);
