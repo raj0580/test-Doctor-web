@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor's Store</title>
+    
+    <!-- Core Stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- PWA Manifest and Theme Color -->
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2a9d8f"/>
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
 </head>
 <body>
     <div class="app-container">
-        <!-- Header, Main content, Bottom Nav remain the same -->
+        
+        <!-- Top Header with Personalized Greeting -->
         <header class="app-header">
             <div class="greeting-section">
                 <h1 id="user-greeting">Welcome!</h1>
@@ -20,47 +27,73 @@
             </div>
         </header>
         
+        <!-- Main Content Area -->
         <main class="app-main">
+            
+            <!-- Promotional Banner Section -->
             <section class="promo-banner-container">
-                <div id="promo-banner" class="promo-banner" style="background-image: url('https://via.placeholder.com/400x150/2a9d8f/ffffff?text=Loading%20Banner...');">
+                <div id="promo-banner" class="promo-banner">
+                    <!-- Dynamic content will be loaded here by ui.js -->
                     <div class="promo-content">
-                        <h2 id="promo-title">Special Offer</h2>
-                        <p id="promo-subtitle">Check out our new products</p>
+                        <h2 id="promo-title"></h2>
+                        <p id="promo-subtitle"></p>
                     </div>
                 </div>
             </section>
             
+            <!-- Category Tabs Section -->
             <section class="category-section">
-                <div class="tabs-container"><div class="category-tabs" id="category-tabs"></div></div>
+                <div class="tabs-container">
+                    <div class="category-tabs" id="category-tabs">
+                        <!-- Dynamic category tabs will be loaded here by ui.js -->
+                    </div>
+                </div>
             </section>
             
+            <!-- "New Arrivals" Product Section -->
             <section class="product-section">
                 <div class="section-header">
                     <h2 class="section-title">New Arrivals</h2>
                     <a href="#" class="view-all-link">View All</a>
                 </div>
-                <div class="product-grid" id="product-grid"></div>
+                <div class="product-grid" id="product-grid">
+                    <!-- Dynamic product cards will be loaded here by ui.js -->
+                </div>
             </section>
         </main>
         
+        <!-- Bottom Navigation Bar -->
         <nav class="bottom-nav">
-            <a href="/index.html" class="nav-item active"><i class="icon-home"></i><span>Home</span></a>
-            <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
-            <a href="/cart.html" class="nav-item"><i class="icon-cart"></i><span id="cart-count-badge" class="badge hidden">0</span><span>Cart</span></a>
-            <a href="/profile.html" class="nav-item"><i class="icon-profile"></i><span>Profile</span></a>
+            <a href="/index.html" class="nav-item active">
+                <i class="icon-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="icon-category"></i>
+                <span>Categories</span>
+            </a>
+            <a href="/cart.html" class="nav-item">
+                <i class="icon-cart"></i>
+                <span id="cart-count-badge" class="badge hidden">0</span>
+                <span>Cart</span>
+            </a>
+            <a href="/profile.html" class="nav-item">
+                <i class="icon-profile"></i>
+                <span>Profile</span>
+            </a>
         </nav>
     </div>
 
-    <!-- Auth Modal with Sign-in Options -->
+    <!-- Authentication Modal (Initially Hidden) -->
     <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <button class="close-modal-btn">&times;</button>
-            <div id="auth-view">
-                <!-- Auth views will be injected here -->
-            </div>
+            <!-- The content for Login/Register/OTP is injected here by auth.js -->
+            <div id="auth-view"></div>
         </div>
     </div>
     
+    <!-- Main JavaScript file for the application -->
     <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>
