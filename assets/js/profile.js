@@ -1,3 +1,4 @@
+javascript
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { auth, db } from './firebase-config.js';
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function displayUserProfile(user) {
     const profileNameEl = document.getElementById('profile-name');
-    const profilePhoneEl = document.getElementById('profile-phone');
+    const profileEmailEl = document.getElementById('profile-email');
     const profileAvatarEl = document.getElementById('profile-avatar');
 
     const userDocRef = doc(db, 'users', user.uid);
@@ -34,6 +35,6 @@ async function displayUserProfile(user) {
     }
 
     if (profileNameEl) profileNameEl.textContent = userName;
-    if (profilePhoneEl) profilePhoneEl.textContent = user.phoneNumber;
+    if (profileEmailEl) profileEmailEl.textContent = user.email;
     if (profileAvatarEl) profileAvatarEl.textContent = userName.charAt(0).toUpperCase();
 }
