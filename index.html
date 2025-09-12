@@ -32,11 +32,7 @@
             </section>
             
             <section class="category-section">
-                <div class="tabs-container">
-                    <div class="category-tabs" id="category-tabs">
-                        <p>Loading categories...</p>
-                    </div>
-                </div>
+                <div class="tabs-container"><div class="category-tabs" id="category-tabs"></div></div>
             </section>
             
             <section class="product-section">
@@ -44,9 +40,7 @@
                     <h2 class="section-title">New Arrivals</h2>
                     <a href="#" class="view-all-link">View All</a>
                 </div>
-                <div class="product-grid" id="product-grid">
-                    <p>Loading products...</p>
-                </div>
+                <div class="product-grid" id="product-grid"></div>
             </section>
         </main>
         
@@ -58,10 +52,13 @@
         </nav>
     </div>
 
+    <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <button class="close-modal-btn">&times;</button>
-            <div id="auth-view"></div>
+            <div id="auth-view">
+                <!-- Login/Register/Forgot Password views will be injected here by auth.js -->
+            </div>
         </div>
     </div>
     
