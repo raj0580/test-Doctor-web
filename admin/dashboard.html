@@ -12,61 +12,82 @@
             <h1>Admin Dashboard</h1>
             <button id="logout-btn">Logout</button>
         </div>
-
-        <section class="admin-section">
-            <h2>Promotional Banner Management</h2>
-            <form id="banner-form">
-                <p>Current Banner Image:</p>
-                <img id="current-banner-img" src="" alt="No banner image set" style="max-width: 300px; margin-bottom: 1rem; border-radius: 5px;">
-                <label for="banner-image">Upload New Banner Image (Optional)</label>
-                <input type="file" id="banner-image" accept="image/*">
-                <label for="banner-title">Banner Title (Optional)</label>
-                <input type="text" id="banner-title" placeholder="e.g., Get 25% Off">
-                <label for="banner-subtitle">Banner Subtitle (Optional)</label>
-                <input type="text" id="banner-subtitle" placeholder="e.g., On your first order">
-                <button type="submit" id="update-banner-btn">Update Banner</button>
-            </form>
-        </section>
         
-        <section class="admin-section">
-            <h2>Category Management</h2>
-            <form id="category-form">
-                <input type="text" id="category-name" placeholder="New Category Name" required>
-                <button type="submit">Add Category</button>
-            </form>
-            <div id="category-list"></div>
-        </section>
+        <div class="admin-tabs">
+            <button class="tab-link active" data-tab="banner">Banner</button>
+            <button class="tab-link" data-tab="categories">Categories</button>
+            <button class="tab-link" data-tab="products">Products</button>
+            <button class="tab-link" data-tab="orders">Orders</button>
+            <button class="tab-link" data-tab="users">Users</button>
+        </div>
 
-        <section class="admin-section">
-            <h2>Product Management</h2>
-            <form id="add-product-form">
-                <label for="product-name">Product Name</label>
-                <input type="text" id="product-name" required>
-                <label for="product-mrp">MRP</label>
-                <input type="number" id="product-mrp" required>
-                <label for="product-price">Selling Price</label>
-                <input type="number" id="product-price" required>
-                
-                <label for="product-category">Category</label>
-                <select id="product-category" required>
-                    <option value="">Select Category</option>
-                </select>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="is-new-arrival"> Mark as New Arrival
-                </label>
-                <label for="product-badge">Special Badge (e.g., Limited, Sale)</label>
-                <input type="text" id="product-badge">
-                
-                <label for="product-image">Product Image</label>
-                <input type="file" id="product-image" accept="image/*" required>
-                <button type="submit" id="add-product-btn">Add Product</button>
-            </form>
-        </section>
+        <div id="banner" class="tab-content active">
+            <section class="admin-section">
+                <h2>Promotional Banner Management</h2>
+                <form id="banner-form">
+                    <p>Current Banner Image:</p>
+                    <img id="current-banner-img" src="" alt="No banner image set" style="max-width: 300px; margin-bottom: 1rem; border-radius: 5px;">
+                    <label for="banner-image">Upload New Banner Image (Optional)</label>
+                    <input type="file" id="banner-image" accept="image/*">
+                    <label for="banner-title">Banner Title (Optional)</label>
+                    <input type="text" id="banner-title" placeholder="e.g., Get 25% Off">
+                    <label for="banner-subtitle">Banner Subtitle (Optional)</label>
+                    <input type="text" id="banner-subtitle" placeholder="e.g., On your first order">
+                    <button type="submit" id="update-banner-btn">Update Banner</button>
+                </form>
+            </section>
+        </div>
 
-        <section class="admin-section">
-            <h2>Orders</h2>
-            <div id="orders-container"></div>
-        </section>
+        <div id="categories" class="tab-content">
+            <section class="admin-section">
+                <h2>Category Management</h2>
+                <form id="category-form">
+                    <input type="text" id="category-name" placeholder="New Category Name" required>
+                    <button type="submit">Add Category</button>
+                </form>
+                <div id="category-list"></div>
+            </section>
+        </div>
+
+        <div id="products" class="tab-content">
+            <section class="admin-section">
+                <h2>Product Management</h2>
+                <form id="add-product-form">
+                    <label for="product-name">Product Name</label>
+                    <input type="text" id="product-name" required>
+                    <label for="product-mrp">MRP</label>
+                    <input type="number" id="product-mrp" required>
+                    <label for="product-price">Selling Price</label>
+                    <input type="number" id="product-price" required>
+                    <label for="product-category">Category</label>
+                    <select id="product-category" required>
+                        <option value="">Select Category</option>
+                    </select>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="is-new-arrival"> Mark as New Arrival
+                    </label>
+                    <label for="product-badge">Special Badge (e.g., Limited, Sale)</label>
+                    <input type="text" id="product-badge">
+                    <label for="product-image">Product Image</label>
+                    <input type="file" id="product-image" accept="image/*" required>
+                    <button type="submit" id="add-product-btn">Add Product</button>
+                </form>
+            </section>
+        </div>
+
+        <div id="orders" class="tab-content">
+            <section class="admin-section">
+                <h2>Orders</h2>
+                <div id="orders-container"></div>
+            </section>
+        </div>
+
+        <div id="users" class="tab-content">
+            <section class="admin-section">
+                <h2>Registered Users</h2>
+                <div id="users-container"></div>
+            </section>
+        </div>
     </main>
     <script type="module" src="admin.js"></script>
 </body>
