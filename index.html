@@ -6,8 +6,6 @@
     <title>Doctor's Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2a9d8f"/>
-    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
 </head>
 <body>
     <div class="app-container">
@@ -56,8 +54,21 @@
     <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <button class="close-modal-btn">&times;</button>
-            <div id="auth-view">
-                <!-- Login/Register/Forgot Password views will be injected here by auth.js -->
+            <h2>Login or Signup</h2>
+            <div id="auth-container">
+                <p>Enter your phone number to continue</p>
+                <div class="phone-input-container">
+                    <span class="country-code">+91</span>
+                    <input type="tel" id="phone-input" placeholder="Your 10-digit number" maxlength="10">
+                </div>
+                <div id="recaptcha-container"></div>
+                <button id="send-otp-btn" class="cta-btn">Send OTP</button>
+
+                <div id="otp-container" class="hidden">
+                    <p>Enter the OTP sent to your number</p>
+                    <input type="text" id="otp-input" placeholder="6-digit OTP" inputmode="numeric" pattern="[0-9]*">
+                    <button id="verify-otp-btn" class="cta-btn">Verify OTP</button>
+                </div>
             </div>
         </div>
     </div>
