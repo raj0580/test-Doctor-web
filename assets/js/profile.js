@@ -1,121 +1,162 @@
-import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, getDoc, updateDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { auth, db } from './firebase-config.js';
+import { loadTranslations } from './ui.js';
 
-let translations = {};
-const getLang = () => localStorage.getItem('lang') || 'bn';
-
-async function loadTranslations() {
-    const lang = getLang();
-    try {
-        const response = await fetch(`assets/lang/${lang}.json`);
-        translations = await response.json();
-        translatePage();
-    } catch (error) {
-        console.error("Failed to load translations:", error);
-    }
-}
-
-function translatePage() {
-    document.querySelectorAll('[data-lang]').forEach(el => {
-        const key = el.getAttribute('data-lang');
-        if (translations[key]) el.innerText = translations[key];
+document.addEventListener('DOMContentLoaded', () => {
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            loadTranslations();
+            displayUserProfile(user);
+        } else {
+            window.location.href = '/index.html';
+        }
     });
-    document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-lang-placeholder');
-        if (translations[key]) el.placeholder = translations[key];
-    });
-    document.documentElement.lang = getLang();
-}
 
-const langBnBtn = document.getElementById('lang-bn');
-const langEnBtn = document.getElementById('lang-en');
-if (langBnBtn && langEnBtn) {
-    langBnBtn.addEventListener('click', () => { localStorage.setItem('lang', 'bn'); window.location.reload(); });
-    langEnBtn.addEventListener('click', () => { localStorage.setItem('lang', 'en'); window.location.reload(); });
-}
-
-const userNameEl = document.getElementById('user-name');
-const userPhoneEl = document.getElementById('user-phone');
-const userAddressInput = document.getElementById('user-address');
-const ordersContainer = document.getElementById('orders-history-container');
-const updateProfileBtn = document.getElementById('update-profile-btn');
-const logoutBtn = document.getElementById('logout-btn');
-let currentUserId = null;
-
-onAuthStateChanged(auth, user => {
-    if (user) {
-        currentUserId = user.uid;
-        loadTranslations().then(() => {
-            loadUserProfile(user.uid);
-            loadUserOrders(user.uid);
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = '/index.html';
+            });
         });
-    } else {
-        window.location.href = 'index.html';
     }
 });
 
-async function loadUserProfile(userId) {
-    const docSnap = await getDoc(doc(db, "users", userId));
-    if (docSnap.exists()) {
-        const userData = docSnap.data();
-        if (userNameEl) userNameEl.textContent = userData.name || 'N/A';
-        if (userPhoneEl) userPhoneEl.textContent = userData.phone || 'N/A';
-        if (userAddressInput) userAddressInput.value = userData.address || '';
-    }
-}
+async function displayUserProfile(user) {
+    const profileNameEl = document.getElementById('profile-name');
+    const profilePhoneEl = document.getElementById('profile-phone');
+    const profileAvatarEl = document.getElementById('profile-avatar');
 
-if (updateProfileBtn) {
-    updateProfileBtn.addEventListener('click', async () => {
-        if (!currentUserId || !userAddressInput) return;
-        const address = userAddressInput.value.trim();
-        await updateDoc(doc(db, "users", currentUserId), { address });
-        alert(translations.address_updated_success);
-    });
-}
-
-async function loadUserOrders(userId) {
-    if (!ordersContainer) return; // ✅ Defensive check
-    const q = query(collection(db, "orders"), where("userId", "==", userId), orderBy("orderDate", "desc"));
-    const querySnapshot = await getDocs(q);
-    
-    ordersContainer.innerHTML = '';
-    if (querySnapshot.empty) {
-        ordersContainer.innerHTML = `<p>${translations.no_orders_yet || "You haven't placed any orders yet."}</p>`;
-        return;
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+    let userName = "User";
+    if (userDocSnap.exists() && userDocSnap.data().name) {
+        userName = userDocSnap.data().name;
     }
 
-    querySnapshot.forEach(docSnap => {
-        const order = docSnap.data();
-        const orderDate = new Date(order.orderDate.seconds * 1000).toLocaleDateString(getLang() === 'bn' ? 'bn-BD' : 'en-IN');
-        const orderDiv = document.createElement('div');
-        orderDiv.className = 'order-item';
-        orderDiv.innerHTML = `
-            <p><strong>${translations.order_id || 'Order ID:'}</strong> ${docSnap.id}</p>
-            <p><strong>${translations.order_date || 'Date:'}</strong> ${orderDate}</p>
-            <p><strong>${translations.order_total || 'Total Amount:'}</strong> ₹${order.totalAmount}</p>
-            <p><strong>${translations.order_status || 'Status:'}</strong> ${order.status}</p>
-        `;
-        ordersContainer.appendChild(orderDiv);
-    });
-}
+    if (profileNameEl) profileNameEl.textContent = userName;
+    if (profilePhoneEl) profilePhoneEl.textContent = user.phoneNumber;
+    if (profileAvatarEl) profileAvatarEl.textContent = userName.charAt(0).toUpperCase();
+}```
 
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-        signOut(auth).then(() => {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = 'index.html';
+#### 📁 `admin/auth.js`
+*(Unchanged from the previous correct version)*
+
+#### 📁 `admin/admin.js`
+```javascript
+import { db, auth } from '../assets/js/firebase-config.js';
+import { collection, getDocs, addDoc, serverTimestamp, doc, updateDoc, query, orderBy, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { CONFIG } from '../config.js';
+
+const IMGBB_API_KEY = CONFIG.IMGBB_API_KEY;
+
+onAuthStateChanged(auth, user => user ? initializeDashboard() : (window.location.href = 'index.html'));
+
+function initializeDashboard() {
+    const logoutBtn = document.getElementById('logout-btn');
+    const bannerForm = document.getElementById('banner-form');
+    const categoryForm = document.getElementById('category-form');
+    const categoryListDiv = document.getElementById('category-list');
+    const productCategorySelect = document.getElementById('product-category');
+    const addProductForm = document.getElementById('add-product-form');
+
+    logoutBtn.addEventListener('click', () => signOut(auth).then(() => window.location.href = 'index.html'));
+
+    bannerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const bannerData = {
+            title: document.getElementById('banner-title').value,
+            subtitle: document.getElementById('banner-subtitle').value
+        };
+        await setDoc(doc(db, 'settings', 'promoBanner'), bannerData);
+        alert('Banner updated successfully!');
+    });
+
+    categoryForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const categoryNameInput = document.getElementById('category-name');
+        const categoryName = categoryNameInput.value.trim();
+        if (categoryName) {
+            await addDoc(collection(db, 'categories'), { name: categoryName });
+            categoryNameInput.value = '';
+            loadCategories();
+        }
+    });
+
+    addProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const addProductBtn = document.getElementById('add-product-btn');
+        addProductBtn.disabled = true;
+        addProductBtn.textContent = 'Uploading...';
+        
+        try {
+            const imageFile = document.getElementById('product-image').files[0];
+            if (!imageFile) throw new Error('Please select an image.');
+
+            const formData = new FormData();
+            formData.append('image', imageFile);
+
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+            const result = await response.json();
+            if (!result.success) throw new Error('Image upload failed to ImgBB.');
+            
+            const productData = {
+                name: document.getElementById('product-name').value,
+                mrp: Number(document.getElementById('product-mrp').value),
+                sellingPrice: Number(document.getElementById('product-price').value),
+                category: document.getElementById('product-category').value,
+                isNewArrival: document.getElementById('is-new-arrival').checked,
+                badge: document.getElementById('product-badge').value.trim(),
+                imageUrl: result.data.url,
+                createdAt: serverTimestamp()
+            };
+            await addDoc(collection(db, 'products'), productData);
+            alert('Product added successfully!');
+            addProductForm.reset();
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        } finally {
+            addProductBtn.disabled = false;
+            addProductBtn.textContent = 'Add Product';
+        }
+    });
+
+    async function loadBannerData() {
+        const bannerSnap = await getDoc(doc(db, 'settings', 'promoBanner'));
+        if (bannerSnap.exists()) {
+            document.getElementById('banner-title').value = bannerSnap.data().title;
+            document.getElementById('banner-subtitle').value = bannerSnap.data().subtitle;
+        }
+    }
+
+    async function loadCategories() {
+        const categorySnapshot = await getDocs(query(collection(db, 'categories'), orderBy('name')));
+        let listHtml = '';
+        let selectHtml = '<option value="">Select Category</option>';
+        categorySnapshot.forEach(doc => {
+            listHtml += `<div class="category-item"><span>${doc.data().name}</span><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
+            selectHtml += `<option value="${doc.id}">${doc.data().name}</option>`;
         });
-    });
-}
+        categoryListDiv.innerHTML = listHtml;
+        productCategorySelect.innerHTML = selectHtml;
 
-// Hamburger Menu Logic
-const hamburger = document.querySelector(".hamburger");
-const navLinksContainer = document.querySelector(".nav-links-container");
-if (hamburger && navLinksContainer) { // ✅ Defensive check
-    hamburger.addEventListener("click", () => {
-        hamburger.classList.toggle("active");
-        navLinksContainer.classList.toggle("active");
-    });
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                if(confirm('Are you sure you want to delete this category?')) {
+                    await deleteDoc(doc(db, 'categories', e.target.dataset.id));
+                    loadCategories();
+                }
+            });
+        });
+    }
+
+    // Load other data like leads and orders...
+    // ...
+
+    loadBannerData();
+    loadCategories();
 }
