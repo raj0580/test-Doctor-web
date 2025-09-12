@@ -11,7 +11,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Top Header -->
         <header class="app-header">
             <div class="greeting-section">
                 <h1 id="user-greeting" data-lang="welcome_guest">Welcome!</h1>
@@ -22,38 +21,28 @@
             </div>
         </header>
         
-        <!-- Main Content -->
         <main class="app-main">
-            <!-- Promotional Banner -->
             <section class="promo-banner-container">
-                <div class="promo-banner">
-                    <h2 data-lang="promo_title">Get 25% Off</h2>
-                    <p data-lang="promo_subtitle">On your first order. Use code: <strong>FIRST25</strong></p>
+                <div id="promo-banner" class="promo-banner">
+                    <!-- Dynamic Banner Content Loaded Here -->
                 </div>
             </section>
             
-            <!-- Category Tabs -->
             <section class="category-section">
                 <div class="tabs-container">
-                    <div class="category-tabs" id="category-tabs">
-                        <!-- Categories will be loaded here by ui.js -->
-                    </div>
+                    <div class="category-tabs" id="category-tabs"></div>
                 </div>
             </section>
             
-            <!-- New Arrivals Section -->
             <section class="product-section">
                 <div class="section-header">
                     <h2 class="section-title" data-lang="new_arrivals">New Arrivals</h2>
                     <a href="#" class="view-all-link" data-lang="view_all">View All</a>
                 </div>
-                <div class="product-grid" id="product-grid">
-                    <!-- Products will be loaded here by ui.js -->
-                </div>
+                <div class="product-grid" id="product-grid"></div>
             </section>
         </main>
         
-        <!-- Bottom Navigation Bar -->
         <nav class="bottom-nav">
             <a href="/index.html" class="nav-item active">
                 <i class="icon-home"></i>
@@ -74,7 +63,6 @@
         </nav>
     </div>
 
-    <!-- Login/Signup Modal (Initially Hidden) -->
     <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <button class="close-modal-btn">&times;</button>
