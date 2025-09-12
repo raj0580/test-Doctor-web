@@ -1,69 +1,81 @@
-javascript
+import { collection, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { db } from "./firebase-config.js";
+
 let translations = {};
+export async function loadTranslations() { /* Unchanged */ }
 
-export async function loadTranslations() {
-    const lang = localStorage.getItem('lang') || 'bn';
-    const response = await fetch(`assets/lang/${lang}.json`);
-    translations = await response.json();
-    document.documentElement.lang = lang;
-    
-    document.querySelectorAll('[data-lang]').forEach(el => {
-        const key = el.getAttribute('data-lang');
-        if (translations[key]) el.innerText = translations[key];
-    });
-}
-
-export function updatePersonalizedGreeting(user) {
+export async function updatePersonalizedGreeting(user) {
     const greetingEl = document.getElementById('user-greeting');
     if (greetingEl) {
         if (user) {
-            // In a real app, you'd fetch the user's name from Firestore
-            greetingEl.innerText = `Welcome back!`;
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            const userName = userDoc.exists() && userDoc.data().name ? userDoc.data().name.split(' ')[0] : 'Back';
+            greetingEl.innerText = `Welcome ${userName}!`;
         } else {
-            greetingEl.innerText = translations.welcome_guest || 'Welcome!';
+            greetingEl.innerText = "Welcome Guest!";
         }
     }
 }
 
-export function loadCategories() {
+export async function loadBanner() {
+    const bannerEl = document.getElementById('promo-banner');
+    if (!bannerEl) return;
+    const bannerSnap = await getDoc(doc(db, 'settings', 'promoBanner'));
+    if (bannerSnap.exists()) {
+        const data = bannerSnap.data();
+        bannerEl.innerHTML = `
+            <h2>${data.title}</h2>
+            <p>${data.subtitle}</p>`;
+    }
+}
+
+export async function loadCategories() {
     const container = document.getElementById('category-tabs');
     if (!container) return;
-
-    // Dummy categories - replace with Firestore data
-    const categories = ['Vitamins', 'Pain Relief', 'Cold & Flu', 'Digestion', 'Skin Care', 'Baby Care'];
-    container.innerHTML = `<button class="category-tab active">All</button>`;
-    categories.forEach(cat => {
-        container.innerHTML += `<button class="category-tab">${cat}</button>`;
+    const categorySnapshot = await getDocs(query(collection(db, 'categories'), orderBy('name')));
+    container.innerHTML = `<button class="category-tab active" data-category="all">All</button>`;
+    categorySnapshot.forEach(doc => {
+        const category = doc.data();
+        container.innerHTML += `<button class="category-tab" data-category="${doc.id}">${category.name}</button>`;
+    });
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelector('.category-tab.active').classList.remove('active');
+            tab.classList.add('active');
+            loadProducts(tab.dataset.category);
+        });
     });
 }
 
-export function loadProducts() {
+export async function loadProducts(categoryId = 'all') {
     const container = document.getElementById('product-grid');
     if (!container) return;
+    container.innerHTML = "<p>Loading products...</p>";
 
-    // Dummy products - replace with Firestore data
-    const products = [
-        { name: 'Multivitamin Gold', price: 250, image: 'https://via.placeholder.com/150', badge: 'Limited' },
-        { name: 'Pain Relief Gel', price: 120, image: 'https://via.placeholder.com/150' },
-        { name: 'Cough Syrup', price: 90, image: 'https://via.placeholder.com/150', badge: 'Sale' },
-        { name: 'Antacid Tablets', price: 60, image: 'https://via.placeholder.com/150' },
-    ];
+    let productQuery;
+    const productsRef = collection(db, 'products');
+
+    if (categoryId === 'all') {
+        productQuery = query(productsRef, where("isNewArrival", "==", true), orderBy("createdAt", "desc"));
+    } else {
+        productQuery = query(productsRef, where("category", "==", categoryId), orderBy("createdAt", "desc"));
+    }
+    const productSnapshot = await getDocs(productQuery);
+    if (productSnapshot.empty) { container.innerHTML = "<p>No products found.</p>"; return; }
 
     container.innerHTML = '';
-    products.forEach(p => {
+    productSnapshot.forEach(doc => {
+        const p = doc.data();
         const badgeHTML = p.badge ? `<div class="badge">${p.badge}</div>` : '';
         container.innerHTML += `
             <div class="product-card">
                 ${badgeHTML}
                 <button class="wishlist-btn"><i class="icon-heart"></i></button>
-                <div class="img-container">
-                    <img src="${p.image}" alt="${p.name}">
-                </div>
+                <div class="img-container"><img src="${p.imageUrl}" alt="${p.name}"></div>
                 <div class="product-info">
                     <h3 class="product-name">${p.name}</h3>
-                    <p class="product-price">₹${p.price}</p>
+                    <p class="product-price">₹${p.sellingPrice}</p>
                 </div>
-            </div>
-        `;
+            </div>`;
     });
 }
