@@ -3,39 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang="profile_page_title">আমার প্রোফাইল</title>
+    <title data-lang="profile_page_title">My Profile</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2a9d8f"/>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo" data-lang="site_title">ডাক্তারের দোকান</div>
-            <ul>
-                <li><a href="index.html" data-lang="nav_home">হোম</a></li>
-                <li><a href="profile.html" data-lang="nav_profile">আমার প্রোফাইল</a></li>
-                <li><button id="logout-btn" data-lang="logout">লগ আউট</button></li>
-            </ul>
-            <div class="lang-toggle">
-                <button id="lang-bn">বাংলা</button> | <button id="lang-en">English</button>
+    <div class="app-container">
+        <main class="app-main">
+            <div class="profile-header">
+                <div class="avatar" id="profile-avatar"></div>
+                <h2 id="profile-name">Loading...</h2>
+                <p id="profile-phone">Loading...</p>
             </div>
+            
+            <div class="profile-options">
+                <a href="#" class="profile-option">
+                    <span class="option-text" data-lang="my_orders">My Orders</span>
+                    <span class="arrow">&gt;</span>
+                </a>
+                <a href="#" class="profile-option">
+                    <span class="option-text" data-lang="shipping_addresses">Shipping Addresses</span>
+                    <span class="arrow">&gt;</span>
+                </a>
+                <a href="#" class="profile-option">
+                    <span class="option-text" data-lang="settings">Settings</span>
+                    <span class="arrow">&gt;</span>
+                </a>
+                <button id="logout-btn" data-lang="logout">Logout</button>
+            </div>
+        </main>
+        
+        <nav class="bottom-nav">
+            <a href="/index.html" class="nav-item">
+                <i class="icon-home"></i>
+                <span data-lang="nav_home">Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="icon-category"></i>
+                <span data-lang="nav_categories">Categories</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="icon-cart"></i>
+                <span data-lang="nav_cart">Cart</span>
+            </a>
+            <a href="/profile.html" class="nav-item active">
+                <i class="icon-profile"></i>
+                <span data-lang="nav_profile">Profile</span>
+            </a>
         </nav>
-    </header>
-    <main class="profile-page">
-        <h2 data-lang="profile_title">আমার প্রোফাইল</h2>
-        <div id="user-info" class="profile-section">
-            <p><strong data-lang="profile_name">নাম:</strong> <span id="user-name" data-lang="profile_loading">লোড হচ্ছে...</span></p>
-            <p><strong data-lang="profile_phone">ফোন:</strong> <span id="user-phone" data-lang="profile_loading">লোড হচ্ছে...</span></p>
-            <input type="text" id="user-address" data-lang-placeholder="profile_address_placeholder">
-            <button id="update-profile-btn" data-lang="profile_update_btn">ঠিকানা আপডেট করুন</button>
-        </div>
-        <h2 class="section-title" data-lang="orders_title">আমার অর্ডারসমূহ</h2>
-        <div id="orders-history-container" class="profile-section">
-            <p data-lang="profile_loading">লোড হচ্ছে...</p>
-        </div>
-    </main>
-    <footer>
-        <p data-lang="footer_text">&copy; ২০২৫ ডাক্তারের দোকান। সর্বস্বত্ব সংরক্ষিত।</p>
-    </footer>
+    </div>
+    
     <script type="module" src="assets/js/profile.js"></script>
 </body>
 </html>
