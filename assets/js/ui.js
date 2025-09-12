@@ -1,24 +1,19 @@
-import { collection, getDocs, query, where, orderBy, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, getDocs, query, where, orderBy, doc, getDoc, setDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { db, auth } from "./firebase-config.js";
 import { showAuthModal } from "./auth.js";
 
-// A variable to hold translations, though not used in this file.
-let translations = {};
-
 /**
- * Updates the welcome message based on the user's login state and name.
+ * Updates the welcome message in the header based on the user's login state.
  * @param {object|null} user - The Firebase auth user object, or null if logged out.
  */
 export async function updatePersonalizedGreeting(user) {
     const greetingEl = document.getElementById('user-greeting');
     if (greetingEl) {
         if (user) {
-            // If user is logged in, fetch their name from Firestore.
             const userDoc = await getDoc(doc(db, 'users', user.uid));
-            const userName = userDoc.exists() && userDoc.data().name ? userDoc.data().name.split(' ')[0] : 'Back'; // Show first name or 'Back'
+            const userName = userDoc.exists() && userDoc.data().name ? userDoc.data().name.split(' ')[0] : 'Back';
             greetingEl.innerText = `Welcome ${userName}!`;
         } else {
-            // If user is logged out.
             greetingEl.innerText = "Welcome Guest!";
         }
     }
@@ -38,11 +33,9 @@ export async function loadBanner() {
         const bannerSnap = await getDoc(doc(db, 'settings', 'promoBanner'));
         if (bannerSnap.exists()) {
             const data = bannerSnap.data();
-            // Set background image only if a URL is provided in the admin panel
             if (data.imageUrl) {
                 bannerEl.style.backgroundImage = `url(${data.imageUrl})`;
             }
-            // Set title and subtitle
             titleEl.textContent = data.title || '';
             subtitleEl.textContent = data.subtitle || '';
         }
@@ -66,15 +59,11 @@ export async function loadCategories() {
             container.innerHTML += `<button class="category-tab" data-category="${doc.id}">${category.name}</button>`;
         });
 
-        // Add event listeners to each tab to filter products on click.
         document.querySelectorAll('.category-tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                // Visually update the active tab
                 const currentActive = document.querySelector('.category-tab.active');
                 if (currentActive) currentActive.classList.remove('active');
                 tab.classList.add('active');
-                
-                // Reload products for the selected category
                 loadProducts(tab.dataset.category);
             });
         });
@@ -85,7 +74,7 @@ export async function loadCategories() {
 }
 
 /**
- * Fetches products from Firestore and renders them in the product grid.
+ * Fetches products from Firestore and renders them as clickable cards.
  * @param {string} categoryId - The ID of the category to filter by, or 'all'.
  */
 export async function loadProducts(categoryId = 'all') {
@@ -98,10 +87,8 @@ export async function loadProducts(categoryId = 'all') {
         const productsRef = collection(db, 'products');
 
         if (categoryId === 'all') {
-            // On the "All" tab, show products marked as "New Arrival"
             productQuery = query(productsRef, where("isNewArrival", "==", true), orderBy("createdAt", "desc"));
         } else {
-            // For other tabs, filter by the category ID
             productQuery = query(productsRef, where("category", "==", categoryId), orderBy("createdAt", "desc"));
         }
         
@@ -115,28 +102,40 @@ export async function loadProducts(categoryId = 'all') {
         container.innerHTML = '';
         productSnapshot.forEach(doc => {
             const p = doc.data();
-            const pWithId = { id: doc.id, ...p }; // Include document ID for cart functionality
+            const pWithId = { id: doc.id, ...p };
             const badgeHTML = p.badge ? `<div class="badge">${p.badge}</div>` : '';
 
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                ${badgeHTML}
-                <button class="wishlist-btn"><i class="icon-heart"></i></button>
-                <div class="img-container"><img src="${p.imageUrl}" alt="${p.name}"></div>
-                <div class="product-info">
-                    <h3 class="product-name">${p.name}</h3>
-                    <div class="price-add-row">
-                        <p class="product-price">₹${p.sellingPrice}</p>
-                        <button class="add-to-cart-btn" data-product='${JSON.stringify(pWithId)}'>+</button>
+            // Create an anchor tag (<a>) to wrap the card content for navigation
+            const cardLink = document.createElement('a');
+            cardLink.href = `/product-detail.html?id=${doc.id}`;
+            cardLink.className = 'product-card-link';
+
+            cardLink.innerHTML = `
+                <div class="product-card">
+                    ${badgeHTML}
+                    <button class.bind="wishlist-btn"><i class="icon-heart"></i></button>
+                    <div class="img-container"><img src="${p.imageUrl}" alt="${p.name}"></div>
+                    <div class="product-info">
+                        <h3 class="product-name">${p.name}</h3>
+                        <div class="price-add-row">
+                            <p class="product-price">₹${p.sellingPrice}</p>
+                            <button class="add-to-cart-btn" data-product='${JSON.stringify(pWithId)}'>+</button>
+                        </div>
                     </div>
-                </div>`;
-            container.appendChild(card);
+                </div>
+            `;
+            container.appendChild(cardLink);
         });
 
-        // Add event listeners for the new "Add to Cart" buttons
+        // Add event listeners for the "Add to Cart" buttons
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.addEventListener('click', handleAddToCart);
+            button.addEventListener('click', (event) => {
+                // Prevent the link from navigating when clicking the "+" button
+                event.preventDefault();
+                // Stop the event from bubbling up to the parent anchor tag
+                event.stopPropagation();
+                handleAddToCart(event);
+            });
         });
     } catch (error) {
         console.error("Error loading products:", error);
@@ -145,32 +144,43 @@ export async function loadProducts(categoryId = 'all') {
 }
 
 /**
- * Handles the "Add to Cart" button click.
+ * Handles the "Add to Cart" button click. Adds or increments the item quantity.
  * @param {Event} event - The click event from the button.
  */
 async function handleAddToCart(event) {
     const user = auth.currentUser;
-    // If the user is not logged in, show the login modal.
     if (!user) {
         showAuthModal();
         return;
     }
 
-    const product = JSON.parse(event.target.dataset.product);
+    const button = event.target;
+    const product = JSON.parse(button.dataset.product);
     const cartItemRef = doc(db, `users/${user.uid}/cart`, product.id);
 
     try {
-        // Use setDoc with merge to either create or update the item, setting quantity to 1.
-        // A more advanced implementation would increment the quantity.
-        await setDoc(cartItemRef, {
-            name: product.name,
-            price: product.sellingPrice,
-            imageUrl: product.imageUrl,
-            quantity: 1, // Defaulting to 1 for simplicity
-            addedAt: serverTimestamp()
-        }, { merge: true });
+        const docSnap = await getDoc(cartItemRef);
+        
+        if (docSnap.exists()) {
+            // If item already in cart, increment quantity
+            await updateDoc(cartItemRef, {
+                quantity: increment(1)
+            });
+        } else {
+            // If item is not in cart, add it with quantity 1
+            await setDoc(cartItemRef, {
+                name: product.name,
+                price: product.sellingPrice,
+                imageUrl: product.imageUrl,
+                quantity: 1,
+                addedAt: serverTimestamp()
+            });
+        }
 
-        alert(`${product.name} has been added to your cart!`);
+        // Visual feedback
+        button.textContent = '✓';
+        setTimeout(() => { button.textContent = '+'; }, 1000);
+
         updateCartCount(); // Update the visual cart counter
     } catch (error) {
         console.error("Error adding to cart: ", error);
