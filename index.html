@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang="site_title">Doctor's Store</title>
+    <title>Doctor's Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2a9d8f"/>
-    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
 </head>
 <body>
     <div class="app-container">
         <header class="app-header">
             <div class="greeting-section">
-                <h1 id="user-greeting" data-lang="welcome_guest">Welcome!</h1>
-                <p data-lang="tagline">Your trusted health partner.</p>
+                <h1 id="user-greeting">Welcome!</h1>
+                <p>Your trusted health partner.</p>
             </div>
             <div class="header-actions">
                 <button class="icon-btn search-btn"><i class="icon-search"></i></button>
@@ -23,61 +21,41 @@
         
         <main class="app-main">
             <section class="promo-banner-container">
-                <div id="promo-banner" class="promo-banner">
-                    <!-- Dynamic Banner Content Loaded Here -->
+                <div id="promo-banner" class="promo-banner" style="background-image: url('https://via.placeholder.com/400x150/2a9d8f/ffffff?text=Loading%20Banner...');">
+                    <div class="promo-content">
+                        <h2 id="promo-title">Special Offer</h2>
+                        <p id="promo-subtitle">Check out our new products</p>
+                    </div>
                 </div>
             </section>
             
             <section class="category-section">
-                <div class="tabs-container">
-                    <div class="category-tabs" id="category-tabs"></div>
-                </div>
+                <div class="tabs-container"><div class="category-tabs" id="category-tabs"></div></div>
             </section>
             
             <section class="product-section">
                 <div class="section-header">
-                    <h2 class="section-title" data-lang="new_arrivals">New Arrivals</h2>
-                    <a href="#" class="view-all-link" data-lang="view_all">View All</a>
+                    <h2 class="section-title">New Arrivals</h2>
+                    <a href="#" class="view-all-link">View All</a>
                 </div>
                 <div class="product-grid" id="product-grid"></div>
             </section>
         </main>
         
         <nav class="bottom-nav">
-            <a href="/index.html" class="nav-item active">
-                <i class="icon-home"></i>
-                <span data-lang="nav_home">Home</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="icon-category"></i>
-                <span data-lang="nav_categories">Categories</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="icon-cart"></i>
-                <span data-lang="nav_cart">Cart</span>
-            </a>
-            <a href="/profile.html" class="nav-item">
-                <i class="icon-profile"></i>
-                <span data-lang="nav_profile">Profile</span>
-            </a>
+            <a href="/index.html" class="nav-item active"><i class="icon-home"></i><span>Home</span></a>
+            <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
+            <a href="#" class="nav-item"><i class="icon-cart"></i><span>Cart</span></a>
+            <a href="/profile.html" class="nav-item"><i class="icon-profile"></i><span>Profile</span></a>
         </nav>
     </div>
 
+    <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <button class="close-modal-btn">&times;</button>
-            <h2 data-lang="login_signup">Login or Signup</h2>
-            <div id="auth-container">
-                <p data-lang="enter_phone">Enter your phone to continue</p>
-                <input type="tel" id="phone-input" placeholder="+91 12345 67890">
-                <div id="recaptcha-container"></div>
-                <button id="send-otp-btn" class="cta-btn" data-lang="send_otp">Send OTP</button>
-
-                <div id="otp-container" class="hidden">
-                    <p data-lang="enter_otp">Enter the OTP sent to your number</p>
-                    <input type="text" id="otp-input" placeholder="6-digit OTP">
-                    <button id="verify-otp-btn" class="cta-btn" data-lang="verify_otp">Verify OTP</button>
-                </div>
+            <div id="auth-view">
+                <!-- Login/Register views will be injected here by auth.js -->
             </div>
         </div>
     </div>
