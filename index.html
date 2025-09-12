@@ -9,6 +9,7 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Header, Main content, Bottom Nav remain the same -->
         <header class="app-header">
             <div class="greeting-section">
                 <h1 id="user-greeting">Welcome!</h1>
@@ -18,18 +19,21 @@
                 <button class="icon-btn search-btn"><i class="icon-search"></i></button>
             </div>
         </header>
+        
         <main class="app-main">
             <section class="promo-banner-container">
-                <div id="promo-banner" class="promo-banner">
+                <div id="promo-banner" class="promo-banner" style="background-image: url('https://via.placeholder.com/400x150/2a9d8f/ffffff?text=Loading%20Banner...');">
                     <div class="promo-content">
                         <h2 id="promo-title">Special Offer</h2>
                         <p id="promo-subtitle">Check out our new products</p>
                     </div>
                 </div>
             </section>
+            
             <section class="category-section">
                 <div class="tabs-container"><div class="category-tabs" id="category-tabs"></div></div>
             </section>
+            
             <section class="product-section">
                 <div class="section-header">
                     <h2 class="section-title">New Arrivals</h2>
@@ -38,16 +42,25 @@
                 <div class="product-grid" id="product-grid"></div>
             </section>
         </main>
+        
         <nav class="bottom-nav">
             <a href="/index.html" class="nav-item active"><i class="icon-home"></i><span>Home</span></a>
             <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
-            <a href="/cart.html" class="nav-item"><i class="icon-cart"></i><span id="cart-count" class="cart-count hidden">0</span><span>Cart</span></a>
+            <a href="/cart.html" class="nav-item"><i class="icon-cart"></i><span id="cart-count-badge" class="badge hidden">0</span><span>Cart</span></a>
             <a href="/profile.html" class="nav-item"><i class="icon-profile"></i><span>Profile</span></a>
         </nav>
     </div>
+
+    <!-- Auth Modal with Sign-in Options -->
     <div id="auth-modal" class="modal-overlay hidden">
-        <div class="modal-content"><button class="close-modal-btn">&times;</button><div id="auth-view"></div></div>
+        <div class="modal-content">
+            <button class="close-modal-btn">&times;</button>
+            <div id="auth-view">
+                <!-- Auth views will be injected here -->
+            </div>
+        </div>
     </div>
+    
     <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>
