@@ -104,3 +104,79 @@ function getAuthErrorMessage(error) {
         default: return 'An unknown error occurred. Please try again.';
     }
 }
+/* --- Checkout Page Styles --- */
+.checkout-page {
+    padding-top: 60px; /* Space for fixed header */
+}
+.checkout-section {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 1.5rem;
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+}
+.checkout-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+.address-card {
+    line-height: 1.5;
+}
+.address-card strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+.address-card p {
+    margin: 0;
+    color: var(--light-text);
+}
+.change-address-link {
+    display: block;
+    margin-top: 1rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+.cart-item-card-mini {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+.cart-item-card-mini:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.cart-item-card-mini img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    background: #f1f1f1;
+    border-radius: var(--border-radius-md);
+}
+.cart-item-card-mini .item-info {
+    flex-grow: 1;
+}
+.cart-item-card-mini .item-info h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+.cart-item-card-mini .item-info p {
+    margin: 0.25rem 0 0;
+    font-weight: 600;
+    color: var(--text-color);
+}
+#pay-now-btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+#pay-now-btn:disabled {
+    background-color: var(--light-text);
+    cursor: not-allowed;
+}
