@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang="profile_page_title">My Profile</title>
+    <title>My Profile</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2a9d8f"/>
 </head>
 <body>
     <div class="app-container">
@@ -14,46 +12,24 @@
             <div class="profile-header">
                 <div class="avatar" id="profile-avatar"></div>
                 <h2 id="profile-name">Loading...</h2>
-                <p id="profile-phone">Loading...</p>
+                <p id="profile-email">Loading...</p>
             </div>
             
             <div class="profile-options">
-                <a href="#" class="profile-option">
-                    <span class="option-text" data-lang="my_orders">My Orders</span>
-                    <span class="arrow">&gt;</span>
-                </a>
-                <a href="#" class="profile-option">
-                    <span class="option-text" data-lang="shipping_addresses">Shipping Addresses</span>
-                    <span class="arrow">&gt;</span>
-                </a>
-                <a href="#" class="profile-option">
-                    <span class="option-text" data-lang="settings">Settings</span>
-                    <span class="arrow">&gt;</span>
-                </a>
-                <button id="logout-btn" data-lang="logout">Logout</button>
+                <a href="#" class="profile-option"><span>My Orders</span><span class="arrow">&gt;</span></a>
+                <a href="#" class="profile-option"><span>Shipping Addresses</span><span class="arrow">&gt;</span></a>
+                <a href="#" class="profile-option"><span>Settings</span><span class="arrow">&gt;</span></a>
+                <button id="logout-btn">Logout</button>
             </div>
         </main>
         
         <nav class="bottom-nav">
-            <a href="/index.html" class="nav-item">
-                <i class="icon-home"></i>
-                <span data-lang="nav_home">Home</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="icon-category"></i>
-                <span data-lang="nav_categories">Categories</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="icon-cart"></i>
-                <span data-lang="nav_cart">Cart</span>
-            </a>
-            <a href="/profile.html" class="nav-item active">
-                <i class="icon-profile"></i>
-                <span data-lang="nav_profile">Profile</span>
-            </a>
+            <a href="/index.html" class="nav-item"><i class="icon-home"></i><span>Home</span></a>
+            <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
+            <a href="#" class="nav-item"><i class="icon-cart"></i><span>Cart</span></a>
+            <a href="/profile.html" class="nav-item active"><i class="icon-profile"></i><span>Profile</span></a>
         </nav>
     </div>
-    
     <script type="module" src="assets/js/profile.js"></script>
 </body>
 </html>
