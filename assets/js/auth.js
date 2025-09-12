@@ -1,115 +1,243 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+    RecaptchaVerifier,
+    signInWithPhoneNumber,
+    sendSignInLinkToEmail,
+    isSignInWithEmailLink,
+    signInWithEmailLink
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { auth, db } from './firebase-config.js';
 
+// DOM element references
 const authModal = document.getElementById('auth-modal');
 const authView = document.getElementById('auth-view');
 
-const loginViewHTML = `
-    <h3>Login to your Account</h3>
-    <p class="error-message" id="auth-error"></p>
-    <input type="email" id="login-email" placeholder="Email Address" required>
-    <input type="password" id="login-password" placeholder="Password" required>
-    <button id="login-btn" class="cta-btn">Login</button>
-    <p class="auth-toggle-link"><a href="#" id="show-forgot">Forgot Password?</a></p>
-    <p class="auth-toggle-link">Don't have an account? <a href="#" id="show-register">Register</a></p>
-`;
+// Firebase action code settings for email link verification
+const actionCodeSettings = {
+    url: `${window.location.origin}/index.html`, // URL to redirect back to
+    handleCodeInApp: true
+};
 
-const registerViewHTML = `
-    <h3>Create a New Account</h3>
-    <p class="error-message" id="auth-error"></p>
-    <input type="text" id="register-name" placeholder="Full Name" required>
-    <input type="email" id="register-email" placeholder="Email Address" required>
-    <input type="password" id="register-password" placeholder="Password (min. 6 characters)" required>
-    <button id="register-btn" class="cta-btn">Register</button>
-    <p class="auth-toggle-link">Already have an account? <a href="#" id="show-login">Login</a></p>
-`;
+// --- VIEW RENDERERS: Dynamically build the HTML for the auth modal ---
 
-const forgotViewHTML = `
-    <h3>Reset Password</h3>
-    <p>Enter your email and we'll send you a link to reset your password.</p>
-    <p class="error-message" id="auth-error"></p>
-    <input type="email" id="forgot-email" placeholder="Email Address" required>
-    <button id="forgot-btn" class="cta-btn">Send Reset Link</button>
-    <p class="auth-toggle-link"><a href="#" id="back-to-login">Back to Login</a></p>
-`;
-
-function renderLoginView() {
-    authView.innerHTML = loginViewHTML;
-    document.getElementById('show-register').addEventListener('click', (e) => { e.preventDefault(); renderRegisterView(); });
-    document.getElementById('show-forgot').addEventListener('click', (e) => { e.preventDefault(); renderForgotView(); });
-    document.getElementById('login-btn').addEventListener('click', handleLogin);
+/**
+ * Renders the initial choice between Email and Phone sign-in.
+ */
+function renderOptionsView() {
+    authView.innerHTML = `
+        <h3>Sign in Options</h3>
+        <div class="auth-options">
+            <button id="show-email" class="cta-btn"><i class="icon-email"></i>Continue with Email</button>
+            <button id="show-phone" class="cta-btn"><i class="icon-phone"></i>Continue with Phone OTP</button>
+        </div>`;
+    document.getElementById('show-email').addEventListener('click', renderEmailRegisterView);
+    document.getElementById('show-phone').addEventListener('click', renderPhoneLoginView);
 }
 
-function renderRegisterView() {
-    authView.innerHTML = registerViewHTML;
-    document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); renderLoginView(); });
-    document.getElementById('register-btn').addEventListener('click', handleRegister);
+/**
+ * Renders the form for Email registration/sign-in.
+ */
+function renderEmailRegisterView() {
+    authView.innerHTML = `
+        <h3>Create Account or Login</h3>
+        <p class="error-message" id="auth-error"></p>
+        <input type="text" id="register-name" placeholder="Full Name" required>
+        <input type="tel" id="register-phone" placeholder="10-digit Phone Number" required>
+        <input type="email" id="register-email" placeholder="Email Address" required>
+        <button id="register-btn" class="cta-btn">Continue with Email</button>
+        <p class="auth-toggle-link"><a href="#" id="show-options">See other options</a></p>`;
+    document.getElementById('show-options').addEventListener('click', e => { e.preventDefault(); renderOptionsView(); });
+    document.getElementById('register-btn').addEventListener('click', handleEmailRegister);
 }
 
-function renderForgotView() {
-    authView.innerHTML = forgotViewHTML;
-    document.getElementById('back-to-login').addEventListener('click', (e) => { e.preventDefault(); renderLoginView(); });
-    document.getElementById('forgot-btn').addEventListener('click', handleForgot);
+/**
+ * Renders the form for Phone OTP sign-in.
+ */
+function renderPhoneLoginView() {
+    authView.innerHTML = `
+        <h3>Login with Phone OTP</h3>
+        <p class="error-message" id="auth-error"></p>
+        <div class="phone-input-container">
+            <span class="country-code">+91</span>
+            <input type="tel" id="phone-input" placeholder="10-digit number" maxlength="10">
+        </div>
+        <div id="recaptcha-container"></div>
+        <button id="send-otp-btn" class="cta-btn">Send OTP</button>
+        <div id="otp-container" class="hidden">
+            <p>Enter OTP</p>
+            <input type="text" id="otp-input" placeholder="6-digit OTP">
+            <button id="verify-otp-btn" class="cta-btn">Verify OTP</button>
+        </div>
+        <p class="auth-toggle-link"><a href="#" id="show-options">See other options</a></p>`;
+    document.getElementById('show-options').addEventListener('click', e => { e.preventDefault(); renderOptionsView(); });
+    document.getElementById('send-otp-btn').addEventListener('click', handleSendOtp);
+    document.getElementById('verify-otp-btn').addEventListener('click', handleVerifyOtp);
+
+    // Render reCAPTCHA after the modal view is created.
+    setTimeout(() => {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'normal' });
+            window.recaptchaVerifier.render();
+        }
+    }, 100);
 }
 
+
+// --- ACTION HANDLERS: Logic for button clicks ---
+
+/**
+ * Handles the "Continue with Email" button click.
+ * Sends a sign-in link to the user's email.
+ */
+async function handleEmailRegister() {
+    const name = document.getElementById('register-name').value;
+    const phone = document.getElementById('register-phone').value;
+    const email = document.getElementById('register-email').value;
+    const errorEl = document.getElementById('auth-error');
+
+    if (!name || !email || !/^[6-9]\d{9}$/.test(phone)) {
+        errorEl.textContent = 'All fields are required and phone must be valid.';
+        return;
+    }
+    
+    try {
+        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+        // Save user's details temporarily in local storage to use after they click the link
+        window.localStorage.setItem('emailForSignIn', email);
+        window.localStorage.setItem('newUserTempData', JSON.stringify({ name, phone }));
+        authView.innerHTML = `<h3>Check your inbox</h3><p>A sign-in link has been sent to ${email}. Click the link to complete your registration or login.</p>`;
+    } catch (error) {
+        errorEl.textContent = getAuthErrorMessage(error);
+    }
+}
+
+/**
+ * Handles the "Send OTP" button click for phone authentication.
+ */
+function handleSendOtp() {
+    const tenDigitNumber = document.getElementById('phone-input').value.trim();
+    if (!/^[6-9]\d{9}$/.test(tenDigitNumber)) {
+        alert('Please enter a valid 10-digit number.');
+        return;
+    }
+    const phoneNumber = `+91${tenDigitNumber}`;
+    const appVerifier = window.recaptchaVerifier;
+
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then(confirmationResult => {
+            window.confirmationResult = confirmationResult;
+            document.getElementById('otp-container').classList.remove('hidden');
+            alert('OTP Sent!');
+        }).catch(error => {
+            console.error("OTP Error:", error);
+            alert("Failed to send OTP. Please solve reCAPTCHA and try again.");
+        });
+}
+
+/**
+ * Handles the "Verify OTP" button click.
+ */
+async function handleVerifyOtp() {
+    const code = document.getElementById('otp-input').value;
+    if (!code || code.length !== 6) {
+        alert('Please enter the 6-digit OTP.');
+        return;
+    }
+    try {
+        const result = await window.confirmationResult.confirm(code);
+        const user = result.user;
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+
+        // If the user is new, prompt for additional details
+        if (!userDoc.exists()) {
+            const name = prompt("Welcome! Please enter your name.");
+            const email = prompt("Please enter your email address for account recovery.");
+            await setDoc(doc(db, "users", user.uid), {
+                name: name || `User ${user.uid.substring(0,5)}`,
+                phone: user.phoneNumber,
+                email: email || '',
+                createdAt: serverTimestamp()
+            });
+        }
+        closeAuthModal();
+        window.location.reload();
+    } catch (error) {
+        alert("Invalid OTP or error signing in.");
+    }
+}
+
+/**
+ * Checks if the current page load is a result of a user clicking an email sign-in link.
+ * If so, completes the sign-in process.
+ */
+export async function handleEmailLinkSignIn() {
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+        let email = window.localStorage.getItem('emailForSignIn');
+        if (!email) {
+            email = window.prompt('Please provide your email for confirmation');
+        }
+        if (!email) return; // User cancelled prompt
+
+        try {
+            const result = await signInWithEmailLink(auth, email, window.location.href);
+            window.localStorage.removeItem('emailForSignIn');
+            
+            const user = result.user;
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            
+            // If this is a new registration, create their document in Firestore
+            if (!userDoc.exists()) {
+                const tempData = JSON.parse(window.localStorage.getItem('newUserTempData'));
+                if (tempData) {
+                    await setDoc(doc(db, "users", user.uid), {
+                        name: tempData.name,
+                        phone: `+91${tempData.phone}`,
+                        email: user.email,
+                        createdAt: serverTimestamp()
+                    });
+                    window.localStorage.removeItem('newUserTempData');
+                }
+            }
+            
+            // Clean the URL and reload the page
+            window.history.pushState(null, '', window.location.pathname);
+            window.location.reload();
+
+        } catch (error) {
+            console.error("Email link sign-in error:", error);
+            alert("Error signing in with email link. It may be expired or invalid.");
+        }
+    }
+}
+
+
+// --- HELPER FUNCTIONS ---
+
+/**
+ * Displays the authentication modal with the initial options.
+ */
 export function showAuthModal() {
-    renderLoginView();
+    renderOptionsView();
     if (authModal) authModal.classList.remove('hidden');
 }
 
+/**
+ * Hides the authentication modal.
+ */
 export function closeAuthModal() {
     if (authModal) authModal.classList.add('hidden');
 }
 
-async function handleLogin() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const errorEl = document.getElementById('auth-error');
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-        closeAuthModal();
-        window.location.reload();
-    } catch (error) {
-        errorEl.textContent = getAuthErrorMessage(error);
-    }
-}
+/**
+ * Placeholder function, as listeners are now added within render functions.
+ */
+export function setupAuthListeners() {}
 
-async function handleRegister() {
-    const name = document.getElementById('register-name').value;
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-    const errorEl = document.getElementById('auth-error');
-    if (!name) { errorEl.textContent = 'Please enter your name.'; return; }
-
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        await setDoc(doc(db, "users", user.uid), {
-            name: name,
-            email: user.email,
-            createdAt: serverTimestamp()
-        });
-        closeAuthModal();
-        window.location.reload();
-    } catch (error) {
-        errorEl.textContent = getAuthErrorMessage(error);
-    }
-}
-
-async function handleForgot() {
-    const email = document.getElementById('forgot-email').value;
-    const errorEl = document.getElementById('auth-error');
-    try {
-        await sendPasswordResetEmail(auth, email);
-        errorEl.style.color = 'green';
-        errorEl.textContent = 'Password reset link sent! Check your inbox.';
-    } catch(error) {
-        errorEl.style.color = 'var(--accent-color)';
-        errorEl.textContent = getAuthErrorMessage(error);
-    }
-}
-
+/**
+ * Translates Firebase error codes into user-friendly messages.
+ * @param {Error} error - The Firebase auth error object.
+ * @returns {string} A user-friendly error message.
+ */
 function getAuthErrorMessage(error) {
     switch (error.code) {
         case 'auth/invalid-email': return 'Please enter a valid email address.';
@@ -117,10 +245,7 @@ function getAuthErrorMessage(error) {
         case 'auth/wrong-password': return 'Invalid email or password.';
         case 'auth/email-already-in-use': return 'This email is already registered.';
         case 'auth/weak-password': return 'Password should be at least 6 characters.';
+        case 'auth/requires-recent-login': return 'This action is sensitive and requires recent authentication. Please log in again.';
         default: return 'An unknown error occurred. Please try again.';
     }
-}
-
-export function setupAuthListeners() {
-    // This function is now just a placeholder, as listeners are added in render functions.
 }
