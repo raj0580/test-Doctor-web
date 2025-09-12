@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header standalone">
+            <h2>My Cart</h2>
+        </header>
+        <main class="app-main" id="cart-page">
+            <div id="cart-items-container">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <div id="cart-summary" class="cart-summary hidden">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="summary-subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span>₹40</span>
+                </div>
+                <hr>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="summary-total">₹40</span>
+                </div>
+                <button class="cta-btn checkout-btn">Proceed to Checkout</button>
+            </div>
+        </main>
+        <nav class="bottom-nav">
+            <a href="/index.html" class="nav-item"><i class="icon-home"></i><span>Home</span></a>
+            <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
+            <a href="/cart.html" class="nav-item active"><i class="icon-cart"></i><span id="cart-count" class="cart-count hidden">0</span><span>Cart</span></a>
+            <a href="/profile.html" class="nav-item"><i class="icon-profile"></i><span>Profile</span></a>
+        </nav>
+    </div>
+    <script type="module" src="assets/js/cart.js"></script>
+</body>
+</html>
