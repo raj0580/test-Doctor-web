@@ -1,4 +1,4 @@
-const CACHE_NAME = 'doctors-store-v2'; // Changed version to force update
+const CACHE_NAME = 'doctors-store-v3'; // Incremented version to force update
 const urlsToCache = [
   '/',
   '/index.html',
@@ -12,7 +12,7 @@ const urlsToCache = [
   '/config.js',
   '/assets/lang/en.json',
   '/assets/lang/bn.json',
-  '/assets/icons/icon-192x192.png', // Added icons to cache list
+  '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png'
 ];
 
@@ -24,7 +24,7 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
   );
-  self.skipWaiting(); // Force the new service worker to be active
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
@@ -44,26 +44,27 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // We only want to cache GET requests
-  if (event.request.method !== 'GET') {
-    return;
+  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) {
+      return;
   }
-
+  
+  // Strategy: Cache first, then network
   event.respondWith(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.match(event.request).then(response => {
-        // Return from cache, or fetch from network and update cache
-        const fetchPromise = fetch(event.request).then(networkResponse => {
-          // Check if we received a valid response
-          if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
-            cache.put(event.request, responseToCache);
-          }
-          return networkResponse;
+    caches.match(event.request)
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return caches.open(CACHE_NAME).then(cache => {
+          return fetch(event.request).then(networkResponse => {
+            // Only cache successful responses from our own origin
+            if (networkResponse && networkResponse.status === 200 && new URL(event.request.url).origin === self.location.origin) {
+              cache.put(event.request, networkResponse.clone());
+            }
+            return networkResponse;
+          });
         });
-        
-        return response || fetchPromise;
-      });
-    })
+      })
   );
 });
