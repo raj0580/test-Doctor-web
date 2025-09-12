@@ -1,109 +1,126 @@
-import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, setDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { auth, db } from './firebase-config.js';
 
 const authModal = document.getElementById('auth-modal');
-const otpContainer = document.getElementById('otp-container');
-const phoneInput = document.getElementById('phone-input');
-const sendOtpBtn = document.getElementById('send-otp-btn');
-const verifyOtpBtn = document.getElementById('verify-otp-btn');
+const authView = document.getElementById('auth-view');
 
-function renderRecaptcha() {
-    // Ensure it's rendered only once
-    if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'normal', // Use 'normal' size for the visible element
-            'callback': (response) => {
-                // reCAPTCHA solved, this is automatically handled by signInWithPhoneNumber
-                console.log("reCAPTCHA solved");
-            },
-            'expired-callback': () => {
-                // Response expired. Ask user to solve reCAPTCHA again.
-                console.log("reCAPTCHA expired");
-            }
-        });
-        window.recaptchaVerifier.render(); // Explicitly render the widget
-    }
+const loginViewHTML = `
+    <h3>Login to your Account</h3>
+    <p class="error-message" id="auth-error"></p>
+    <input type="email" id="login-email" placeholder="Email Address" required>
+    <input type="password" id="login-password" placeholder="Password" required>
+    <button id="login-btn" class="cta-btn">Login</button>
+    <p class="auth-toggle-link"><a href="#" id="show-forgot">Forgot Password?</a></p>
+    <p class="auth-toggle-link">Don't have an account? <a href="#" id="show-register">Register</a></p>
+`;
+
+const registerViewHTML = `
+    <h3>Create a New Account</h3>
+    <p class="error-message" id="auth-error"></p>
+    <input type="text" id="register-name" placeholder="Full Name" required>
+    <input type="email" id="register-email" placeholder="Email Address" required>
+    <input type="password" id="register-password" placeholder="Password (min. 6 characters)" required>
+    <button id="register-btn" class="cta-btn">Register</button>
+    <p class="auth-toggle-link">Already have an account? <a href="#" id="show-login">Login</a></p>
+`;
+
+const forgotViewHTML = `
+    <h3>Reset Password</h3>
+    <p>Enter your email and we'll send you a link to reset your password.</p>
+    <p class="error-message" id="auth-error"></p>
+    <input type="email" id="forgot-email" placeholder="Email Address" required>
+    <button id="forgot-btn" class="cta-btn">Send Reset Link</button>
+    <p class="auth-toggle-link"><a href="#" id="back-to-login">Back to Login</a></p>
+`;
+
+function renderLoginView() {
+    authView.innerHTML = loginViewHTML;
+    document.getElementById('show-register').addEventListener('click', (e) => { e.preventDefault(); renderRegisterView(); });
+    document.getElementById('show-forgot').addEventListener('click', (e) => { e.preventDefault(); renderForgotView(); });
+    document.getElementById('login-btn').addEventListener('click', handleLogin);
+}
+
+function renderRegisterView() {
+    authView.innerHTML = registerViewHTML;
+    document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); renderLoginView(); });
+    document.getElementById('register-btn').addEventListener('click', handleRegister);
+}
+
+function renderForgotView() {
+    authView.innerHTML = forgotViewHTML;
+    document.getElementById('back-to-login').addEventListener('click', (e) => { e.preventDefault(); renderLoginView(); });
+    document.getElementById('forgot-btn').addEventListener('click', handleForgot);
 }
 
 export function showAuthModal() {
-    if (authModal) {
-        authModal.classList.remove('hidden');
-        // Render reCAPTCHA every time the modal is opened to ensure it's fresh
-        setTimeout(renderRecaptcha, 100); 
-    }
+    renderLoginView();
+    if (authModal) authModal.classList.remove('hidden');
 }
 
 export function closeAuthModal() {
-    if (authModal) {
-        authModal.classList.add('hidden');
-        // Clear the reCAPTCHA so it can be re-rendered next time
-        const recaptchaContainer = document.getElementById('recaptcha-container');
-        if (recaptchaContainer) recaptchaContainer.innerHTML = '';
-        window.recaptchaVerifier = null;
+    if (authModal) authModal.classList.add('hidden');
+}
+
+async function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const errorEl = document.getElementById('auth-error');
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        closeAuthModal();
+        window.location.reload();
+    } catch (error) {
+        errorEl.textContent = getAuthErrorMessage(error);
+    }
+}
+
+async function handleRegister() {
+    const name = document.getElementById('register-name').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const errorEl = document.getElementById('auth-error');
+    if (!name) { errorEl.textContent = 'Please enter your name.'; return; }
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await setDoc(doc(db, "users", user.uid), {
+            name: name,
+            email: user.email,
+            createdAt: serverTimestamp()
+        });
+        closeAuthModal();
+        window.location.reload();
+    } catch (error) {
+        errorEl.textContent = getAuthErrorMessage(error);
+    }
+}
+
+async function handleForgot() {
+    const email = document.getElementById('forgot-email').value;
+    const errorEl = document.getElementById('auth-error');
+    try {
+        await sendPasswordResetEmail(auth, email);
+        errorEl.style.color = 'green';
+        errorEl.textContent = 'Password reset link sent! Check your inbox.';
+    } catch(error) {
+        errorEl.style.color = 'var(--accent-color)';
+        errorEl.textContent = getAuthErrorMessage(error);
+    }
+}
+
+function getAuthErrorMessage(error) {
+    switch (error.code) {
+        case 'auth/invalid-email': return 'Please enter a valid email address.';
+        case 'auth/user-not-found':
+        case 'auth/wrong-password': return 'Invalid email or password.';
+        case 'auth/email-already-in-use': return 'This email is already registered.';
+        case 'auth/weak-password': return 'Password should be at least 6 characters.';
+        default: return 'An unknown error occurred. Please try again.';
     }
 }
 
 export function setupAuthListeners() {
-    if (sendOtpBtn) {
-        sendOtpBtn.addEventListener('click', () => {
-            const tenDigitNumber = phoneInput.value.trim();
-            if (!/^[6-9]\d{9}$/.test(tenDigitNumber)) {
-                alert('Please enter a valid 10-digit Indian mobile number.');
-                return;
-            }
-            const phoneNumber = `+91${tenDigitNumber}`;
-            const appVerifier = window.recaptchaVerifier;
-
-            sendOtpBtn.disabled = true;
-            sendOtpBtn.textContent = 'Sending...';
-
-            signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-                .then(confirmationResult => {
-                    window.confirmationResult = confirmationResult;
-                    otpContainer.classList.remove('hidden');
-                    alert('OTP Sent!');
-                }).catch(error => {
-                    console.error("OTP Error:", error);
-                    alert("Failed to send OTP. Please solve the reCAPTCHA and try again.");
-                }).finally(() => {
-                    sendOtpBtn.disabled = false;
-                    sendOtpBtn.textContent = 'Send OTP';
-                });
-        });
-    }
-    
-    if (verifyOtpBtn) {
-        verifyOtpBtn.addEventListener('click', () => {
-            const code = document.getElementById('otp-input').value;
-            if (!code || code.length !== 6) {
-                alert('Please enter the 6-digit OTP.');
-                return;
-            }
-            
-            verifyOtpBtn.disabled = true;
-            verifyOtpBtn.textContent = 'Verifying...';
-
-            window.confirmationResult.confirm(code).then(async (result) => {
-                const user = result.user;
-                const userDocRef = doc(db, "users", user.uid);
-                const userDocSnap = await getDoc(userDocRef);
-                
-                if (!userDocSnap.exists()) {
-                    await setDoc(userDocRef, {
-                        phone: user.phoneNumber,
-                        name: `User ${user.uid.substring(0, 5)}`,
-                        createdAt: serverTimestamp()
-                    });
-                }
-                closeAuthModal();
-                window.location.reload();
-            }).catch(error => {
-                alert("Invalid OTP. Please try again.");
-            }).finally(() => {
-                verifyOtpBtn.disabled = false;
-                verifyOtpBtn.textContent = 'Verify OTP';
-            });
-        });
-    }
+    // This function is now just a placeholder, as listeners are added in render functions.
 }
