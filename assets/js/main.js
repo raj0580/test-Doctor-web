@@ -1,13 +1,11 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { auth } from './firebase-config.js';
 import { showAuthModal, closeAuthModal, setupAuthListeners } from './auth.js';
-import { loadTranslations, updatePersonalizedGreeting, loadCategories, loadProducts, loadBanner } from './ui.js';
+import { updatePersonalizedGreeting, loadCategories, loadProducts, loadBanner } from './ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, user => {
-        loadTranslations().then(() => {
-            updatePersonalizedGreeting(user);
-        });
+        updatePersonalizedGreeting(user);
     });
     
     loadBanner();
@@ -32,7 +30,5 @@ function setupEventListeners() {
 }
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');
-  });
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
 }
