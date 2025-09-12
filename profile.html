@@ -8,6 +8,9 @@
 </head>
 <body>
     <div class="app-container">
+        <header class="app-header standalone">
+            <h2>My Profile</h2>
+        </header>
         <main class="app-main">
             <div class="profile-header">
                 <div class="avatar" id="profile-avatar"></div>
@@ -17,16 +20,42 @@
             
             <div class="profile-options">
                 <a href="#" class="profile-option"><span>My Orders</span><span class="arrow">&gt;</span></a>
-                <a href="#" class="profile-option"><span>Shipping Addresses</span><span class="arrow">&gt;</span></a>
-                <a href="#" class="profile-option"><span>Settings</span><span class="arrow">&gt;</span></a>
-                <button id="logout-btn">Logout</button>
+                <a href="#" class="profile-option" id="address-option"><span>Shipping Address</span><span class="arrow">&gt;</span></a>
+            </div>
+
+            <!-- Address Form (Initially Hidden) -->
+            <div id="address-form-container" class="profile-section hidden">
+                <h3>Edit Shipping Address</h3>
+                <form id="address-form">
+                    <div class="form-group">
+                        <label for="address-line1">Address Line 1</label>
+                        <input type="text" id="address-line1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-city">City</label>
+                        <input type="text" id="address-city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-state">State</label>
+                        <input type="text" id="address-state" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-pincode">Pincode</label>
+                        <input type="text" id="address-pincode" required>
+                    </div>
+                    <button type="submit" class="cta-btn">Save Address</button>
+                </form>
+            </div>
+
+            <div class="profile-options">
+                 <button id="logout-btn">Logout</button>
             </div>
         </main>
         
         <nav class="bottom-nav">
             <a href="/index.html" class="nav-item"><i class="icon-home"></i><span>Home</span></a>
             <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
-            <a href="#" class="nav-item"><i class="icon-cart"></i><span>Cart</span></a>
+            <a href="/cart.html" class="nav-item"><i class="icon-cart"></i><span id="cart-count" class="cart-count hidden">0</span><span>Cart</span></a>
             <a href="/profile.html" class="nav-item active"><i class="icon-profile"></i><span>Profile</span></a>
         </nav>
     </div>
