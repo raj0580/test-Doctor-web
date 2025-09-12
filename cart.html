@@ -5,41 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Cart</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2a9d8f"/>
 </head>
 <body>
     <div class="app-container">
-        <header class="app-header standalone">
-            <h2>My Cart</h2>
+        <!-- A simple, fixed header for the cart page -->
+        <header class="app-header fixed-header">
+            <h1>My Cart</h1>
         </header>
-        <main class="app-main" id="cart-page">
+
+        <!-- Main content area for the cart -->
+        <main class="app-main cart-page">
+            
+            <!-- This container will be filled with product cards by cart.js -->
             <div id="cart-items-container">
-                <!-- Cart items will be loaded here -->
+                <!-- Example of a loading state, will be replaced by JS -->
+                <p>Loading your cart...</p>
             </div>
-            <div id="cart-summary" class="cart-summary hidden">
+
+            <!-- The order summary card, initially hidden until items are loaded -->
+            <div class="order-summary-card hidden" id="order-summary">
                 <h3>Order Summary</h3>
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span id="summary-subtotal">₹0</span>
+                    <span id="summary-subtotal">₹0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>Delivery Fee</span>
-                    <span>₹40</span>
+                    <span>FREE</span>
                 </div>
-                <hr>
                 <div class="summary-row total">
-                    <span>Total</span>
-                    <span id="summary-total">₹40</span>
+                    <span>Total Amount</span>
+                    <span id="summary-total">₹0.00</span>
                 </div>
-                <button class="cta-btn checkout-btn">Proceed to Checkout</button>
+                <button class="cta-btn" id="checkout-btn">Proceed to Checkout</button>
+            </div>
+
+            <!-- This view is shown by cart.js only if the cart is empty -->
+            <div id="empty-cart-view" class="hidden">
+                <h3>Your cart is empty!</h3>
+                <p>Looks like you haven't added anything to your cart yet.</p>
+                <a href="/index.html" class="cta-btn">Shop Now</a>
             </div>
         </main>
+        
+        <!-- Standard Bottom Navigation Bar -->
         <nav class="bottom-nav">
-            <a href="/index.html" class="nav-item"><i class="icon-home"></i><span>Home</span></a>
-            <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
-            <a href="/cart.html" class="nav-item active"><i class="icon-cart"></i><span id="cart-count" class="cart-count hidden">0</span><span>Cart</span></a>
-            <a href="/profile.html" class="nav-item"><i class="icon-profile"></i><span>Profile</span></a>
+             <a href="/index.html" class="nav-item">
+                 <i class="icon-home"></i>
+                 <span>Home</span>
+             </a>
+             <a href="#" class="nav-item">
+                 <i class="icon-category"></i>
+                 <span>Categories</span>
+             </a>
+             <a href="/cart.html" class="nav-item active">
+                 <i class="icon-cart"></i>
+                 <span id="cart-count-badge" class="badge hidden">0</span>
+                 <span>Cart</span>
+             </a>
+             <a href="/profile.html" class="nav-item">
+                 <i class="icon-profile"></i>
+                 <span>Profile</span>
+             </a>
         </nav>
     </div>
+    
+    <!-- Link to the JavaScript file that controls this page's logic -->
     <script type="module" src="assets/js/cart.js"></script>
 </body>
 </html>
