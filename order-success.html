@@ -1,39 +1,57 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang="order_success_page_title">অর্ডার সফল</title>
+    <title>Order Successful</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2a9d8f"/>
 </head>
 <body>
-    <main class="success-page">
-        <div class="success-box">
-            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-            </svg>
-            <h1 data-lang="order_success_message">ধন্যবাদ! আপনার অর্ডারটি সফলভাবে প্লেস করা হয়েছে।</h1>
-            <p><strong data-lang="your_order_id_is">আপনার অর্ডার আইডি হলো:</strong> <span id="order-id-display"></span></p>
-            <a href="index.html" class="button" data-lang="go_to_home">হোম পেজে ফিরে যান</a>
-        </div>
-    </main>
+    <div class="app-container">
+        <main class="app-main success-page">
+            <div class="success-box">
+                <!-- Animated checkmark SVG for visual confirmation -->
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                
+                <!-- Success message -->
+                <h1>Thank You!</h1>
+                <p>Your order has been placed successfully.</p>
+                
+                <!-- Container to display the unique Order ID -->
+                <div class="order-id-container">
+                    <strong>Your Order ID is:</strong>
+                    <span id="order-id-display">Loading...</span>
+                </div>
+                
+                <!-- Button to navigate back to the homepage -->
+                <a href="/index.html" class="cta-btn">Continue Shopping</a>
+            </div>
+        </main>
+    </div>
+    
     <script>
+        // This is a simple, inline script to get the Order ID from the URL and display it.
         document.addEventListener('DOMContentLoaded', () => {
-            const lang = localStorage.getItem('lang') || 'bn';
-            fetch(`assets/lang/${lang}.json`)
-                .then(res => res.json())
-                .then(translations => {
-                    document.querySelectorAll('[data-lang]').forEach(el => {
-                        const key = el.getAttribute('data-lang');
-                        if (translations[key]) el.innerText = translations[key];
-                    });
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const orderId = urlParams.get('orderId');
-                    if (orderId) {
-                        document.getElementById('order-id-display').textContent = orderId;
-                    }
-                });
+            // Create a URLSearchParams object from the current window's URL
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Get the value of the 'orderId' parameter
+            const orderId = urlParams.get('orderId');
+            
+            const orderIdDisplayElement = document.getElementById('order-id-display');
+
+            // If an orderId exists in the URL, display it.
+            // Otherwise, show an error message.
+            if (orderId && orderIdDisplayElement) {
+                orderIdDisplayElement.textContent = orderId;
+            } else if (orderIdDisplayElement) {
+                orderIdDisplayElement.textContent = 'Not Found';
+            }
         });
     </script>
 </body>
