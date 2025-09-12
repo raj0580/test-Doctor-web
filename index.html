@@ -3,51 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang="site_title">ডাক্তারের ই-কমার্স</title>
+    <title data-lang="site_title">Doctor's Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2a9d8f"/>
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo" data-lang="site_title">ডাক্তারের দোকান</div>
-            <ul id="nav-links">
-                <li><a href="index.html" data-lang="nav_home">হোম</a></li>
-            </ul>
-            <div class="lang-toggle">
-                <button id="lang-bn">বাংলা</button> | <button id="lang-en">English</button>
+    <div class="app-container">
+        <!-- Top Header -->
+        <header class="app-header">
+            <div class="greeting-section">
+                <h1 id="user-greeting" data-lang="welcome_guest">Welcome!</h1>
+                <p data-lang="tagline">Your trusted health partner.</p>
             </div>
+            <div class="header-actions">
+                <button class="icon-btn search-btn"><i class="icon-search"></i></button>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Promotional Banner -->
+            <section class="promo-banner-container">
+                <div class="promo-banner">
+                    <h2 data-lang="promo_title">Get 25% Off</h2>
+                    <p data-lang="promo_subtitle">On your first order. Use code: <strong>FIRST25</strong></p>
+                </div>
+            </section>
+            
+            <!-- Category Tabs -->
+            <section class="category-section">
+                <div class="tabs-container">
+                    <div class="category-tabs" id="category-tabs">
+                        <!-- Categories will be loaded here by ui.js -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- New Arrivals Section -->
+            <section class="product-section">
+                <div class="section-header">
+                    <h2 class="section-title" data-lang="new_arrivals">New Arrivals</h2>
+                    <a href="#" class="view-all-link" data-lang="view_all">View All</a>
+                </div>
+                <div class="product-grid" id="product-grid">
+                    <!-- Products will be loaded here by ui.js -->
+                </div>
+            </section>
+        </main>
+        
+        <!-- Bottom Navigation Bar -->
+        <nav class="bottom-nav">
+            <a href="/index.html" class="nav-item active">
+                <i class="icon-home"></i>
+                <span data-lang="nav_home">Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="icon-category"></i>
+                <span data-lang="nav_categories">Categories</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="icon-cart"></i>
+                <span data-lang="nav_cart">Cart</span>
+            </a>
+            <a href="/profile.html" class="nav-item">
+                <i class="icon-profile"></i>
+                <span data-lang="nav_profile">Profile</span>
+            </a>
         </nav>
-    </header>
-    <main>
-        <section id="hero-section" class="hero"></section>
-        <h2 class="section-title" data-lang="products_title">আমাদের প্রোডাক্টস</h2>
-        <section id="products-container" class="products-grid">
-            <p data-lang="products_loading">প্রোডাক্ট লোড হচ্ছে...</p>
-        </section>
-    </main>
-    <div id="lead-popup" class="modal">
+    </div>
+
+    <!-- Login/Signup Modal (Initially Hidden) -->
+    <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 data-lang="lead_popup_title">স্বাগতম!</h3>
-            <p data-lang="lead_popup_text">শুরু করার জন্য আপনার নাম ও ফোন নম্বর দিন।</p>
-            <input type="text" id="lead-name" data-lang-placeholder="lead_popup_name_placeholder">
-            <input type="tel" id="lead-phone" data-lang-placeholder="lead_popup_phone_placeholder">
-            <button id="submit-lead" data-lang="lead_popup_submit">জমা দিন</button>
+            <button class="close-modal-btn">&times;</button>
+            <h2 data-lang="login_signup">Login or Signup</h2>
+            <div id="auth-container">
+                <p data-lang="enter_phone">Enter your phone to continue</p>
+                <input type="tel" id="phone-input" placeholder="+91 12345 67890">
+                <div id="recaptcha-container"></div>
+                <button id="send-otp-btn" class="cta-btn" data-lang="send_otp">Send OTP</button>
+
+                <div id="otp-container" class="hidden">
+                    <p data-lang="enter_otp">Enter the OTP sent to your number</p>
+                    <input type="text" id="otp-input" placeholder="6-digit OTP">
+                    <button id="verify-otp-btn" class="cta-btn" data-lang="verify_otp">Verify OTP</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="otp-modal" class="modal">
-        <div class="modal-content">
-            <h3 data-lang="otp_modal_title">ফোন নম্বর ভেরিফাই করুন</h3>
-            <p id="otp-message"></p>
-            <div id="recaptcha-container"></div>
-            <button id="send-otp-btn" data-lang="send_otp">OTP পাঠান</button>
-            <input type="text" id="otp-input" placeholder="6-digit OTP" style="display:none;">
-            <button id="verify-otp-btn" data-lang="verify_and_continue" style="display:none;">ভেরিফাই ও চেকআউট</button>
-        </div>
-    </div>
-    <footer>
-        <p data-lang="footer_text">&copy; ২০২৫ ডাক্তারের দোকান। সর্বস্বত্ব সংরক্ষিত।</p>
-    </footer>
-    <!-- ❌ <script src="config.js"></script> লাইনটি মুছে ফেলা হয়েছে ❌ -->
-    <script type="module" src="assets/js/app.js"></script>
+    
+    <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>
