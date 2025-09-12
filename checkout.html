@@ -1,34 +1,56 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang="checkout_page_title">চেকআউট</title>
+    <title>Checkout</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo" data-lang="site_title">ডাক্তারের দোকান</div>
-        </nav>
-    </header>
-    <main class="checkout-page">
-        <div class="checkout-container">
-            <div class="order-summary">
-                <h2 data-lang="order_summary">অর্ডার সারাংশ</h2>
-                <div id="product-summary-card"></div>
-            </div>
-            <div class="shipping-payment">
-                <h2 data-lang="shipping_address">ডেলিভারি ঠিকানা</h2>
-                <div id="address-section">
-                    <p><strong><span data-lang="profile_name"></span></strong> <span id="user-name-display"></span></p>
-                    <p><strong><span data-lang="profile_phone"></span></strong> <span id="user-phone-display"></span></p>
-                    <textarea id="shipping-address-input" data-lang-placeholder="profile_address_placeholder"></textarea>
+    <div class="app-container">
+        <header class="app-header fixed-header">
+            <h1>Checkout</h1>
+        </header>
+
+        <main class="app-main checkout-page">
+            <div class="checkout-section">
+                <h3>Shipping Address</h3>
+                <div id="address-display" class="address-card">
+                    <p>Loading address...</p>
                 </div>
-                <button id="pay-now-btn" data-lang="pay_now">এখন পেমেন্ট করুন</button>
+                <a href="/profile.html#address-modal" class="change-address-link">Change or Add Address</a>
             </div>
-        </div>
-    </main>
+
+            <div class="checkout-section">
+                <h3>Items in Order</h3>
+                <div id="checkout-items-container">
+                    <!-- Checkout items will be loaded here -->
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <h3>Payment Summary</h3>
+                <div class="order-summary-card">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery Fee</span>
+                        <span id="summary-delivery">FREE</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total Amount</span>
+                        <span id="summary-total">₹0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="cta-btn" id="pay-now-btn">Pay Now</button>
+        </main>
+    </div>
+    
+    <!-- Razorpay's official checkout script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="module" src="assets/js/checkout.js"></script>
 </body>
