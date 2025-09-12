@@ -180,3 +180,18 @@ function getAuthErrorMessage(error) {
     background-color: var(--light-text);
     cursor: not-allowed;
 }
+/* --- Success Page Styles from style.css (for reference) --- */
+.success-page { display: flex; justify-content: center; align-items: center; min-height: 80vh; text-align: center; }
+.success-box { background: var(--card-bg); padding: 3rem; border-radius: var(--border-radius-lg); box-shadow: var(--shadow); }
+.success-box h1 { color: var(--primary-color); }
+.success-box p { color: var(--light-text); font-size: 1.1rem; }
+.success-box .cta-btn { display: inline-block; text-decoration: none; margin-top: 2rem; padding: 1rem 2rem; }
+.order-id-container { margin-top: 1.5rem; padding: 1rem; background-color: #f8f9fa; border-radius: var(--border-radius-md); border: 1px dashed var(--border-color); }
+.order-id-container strong { display: block; margin-bottom: 0.5rem; color: var(--light-text); }
+#order-id-display { font-weight: 600; font-size: 1.1rem; color: var(--secondary-color); }
+.checkmark { width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 2; stroke: #fff; stroke-miterlimit: 10; margin: 0 auto 20px; box-shadow: inset 0px 0px 0px #7ac142; animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both; }
+.checkmark__circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 2; stroke-miterlimit: 10; stroke: #7ac142; fill: none; animation: stroke .6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+.checkmark__check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards; }
+@keyframes stroke { 100% { stroke-dashoffset: 0; } }
+@keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+@keyframes fill { 100% { box-shadow: inset 0px 0px 0px 40px #7ac142; } }
