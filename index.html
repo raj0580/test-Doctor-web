@@ -18,7 +18,6 @@
                 <button class="icon-btn search-btn"><i class="icon-search"></i></button>
             </div>
         </header>
-        
         <main class="app-main">
             <section class="promo-banner-container">
                 <div id="promo-banner" class="promo-banner">
@@ -28,11 +27,9 @@
                     </div>
                 </div>
             </section>
-            
             <section class="category-section">
                 <div class="tabs-container"><div class="category-tabs" id="category-tabs"></div></div>
             </section>
-            
             <section class="product-section">
                 <div class="section-header">
                     <h2 class="section-title">New Arrivals</h2>
@@ -41,25 +38,16 @@
                 <div class="product-grid" id="product-grid"></div>
             </section>
         </main>
-        
         <nav class="bottom-nav">
             <a href="/index.html" class="nav-item active"><i class="icon-home"></i><span>Home</span></a>
             <a href="#" class="nav-item"><i class="icon-category"></i><span>Categories</span></a>
-            <a href="#" class="nav-item"><i class="icon-cart"></i><span>Cart</span></a>
+            <a href="/cart.html" class="nav-item"><i class="icon-cart"></i><span id="cart-count" class="cart-count hidden">0</span><span>Cart</span></a>
             <a href="/profile.html" class="nav-item"><i class="icon-profile"></i><span>Profile</span></a>
         </nav>
     </div>
-
-    <!-- Auth Modal for Email/Password -->
     <div id="auth-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button class="close-modal-btn">&times;</button>
-            <div id="auth-view">
-                <!-- Login/Register views will be injected here by auth.js -->
-            </div>
-        </div>
+        <div class="modal-content"><button class="close-modal-btn">&times;</button><div id="auth-view"></div></div>
     </div>
-    
     <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>
