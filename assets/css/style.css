@@ -195,3 +195,82 @@ function getAuthErrorMessage(error) {
 @keyframes stroke { 100% { stroke-dashoffset: 0; } }
 @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
 @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 40px #7ac142; } }
+/* --- Product Detail Page Styles --- */
+.product-detail-page {
+    padding-top: 60px; /* Space for fixed header */
+}
+.app-header.with-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+.back-button {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+.product-image-gallery {
+    background-color: var(--card-bg);
+    padding: 1rem;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 1rem;
+}
+.product-image-gallery img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+}
+.product-info-main {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+}
+.product-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0 0 0.5rem;
+}
+.price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.current-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.original-price {
+    font-size: 1rem;
+    color: var(--light-text);
+    text-decoration: line-through;
+}
+.product-description {
+    line-height: 1.6;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+}
+.add-to-cart-detail-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: var(--border-radius-md);
+}
+.product-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.loading-text, .error-text {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: var(--light-text);
+}
