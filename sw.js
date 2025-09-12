@@ -1,19 +1,17 @@
-javascript
 const CACHE_NAME = 'doctors-store-v1';
 const urlsToCache = [
   '/',
   '/index.html',
   '/profile.html',
-  '/product-detail.html',
   '/assets/css/style.css',
   '/assets/js/main.js',
   '/assets/js/firebase-config.js',
   '/assets/js/auth.js',
   '/assets/js/ui.js',
+  '/assets/js/profile.js',
   '/config.js',
   '/assets/lang/en.json',
-  '/assets/lang/bn.json',
-  'https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap'
+  '/assets/lang/bn.json'
 ];
 
 self.addEventListener('install', event => {
